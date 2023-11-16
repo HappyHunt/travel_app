@@ -11,7 +11,7 @@ void main() {
 
 ThemeData appTheme = ThemeData(
   primaryColor: const Color(0xFF3E4095), // Główny kolor aplikacji
-  hintColor: const Color(0xFFFFD500), // Kolor akcentu
+  hintColor: const Color(0xFF16275A), // Kolor akcentu
   secondaryHeaderColor: const Color(0xFF009688), // Kolor tła AppBar
   colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFF5F5F5)),
   scaffoldBackgroundColor: const Color(0xFFF5F5F5), // Kolor tła Scaffold

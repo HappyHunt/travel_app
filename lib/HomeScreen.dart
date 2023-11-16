@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
 import 'package:flutter_calendar_carousel/classes/event_list.dart';
@@ -7,6 +10,7 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 import 'main.dart';
 
 List<String> categories = <String>['Domy', 'Hotele'];
+TextEditingController _dateValueController = TextEditingController();
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -86,6 +90,8 @@ class AppBarHome extends StatelessWidget {
 }
 
 class SearchScreen extends StatelessWidget {
+
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -96,7 +102,7 @@ class SearchScreen extends StatelessWidget {
           children: [
             TextField(
               decoration: InputDecoration(
-                hintText: 'Wpisz miejscowość',
+                hintText: 'Miejscowość',
                 prefixIcon: Icon(Icons.location_on),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -113,11 +119,14 @@ class SearchScreen extends StatelessWidget {
                 ),
               ),
               keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             ),
             SizedBox(height: 22),
-            TextField(
+            TextFormField(
+              controller: _dateValueController,
+              readOnly: true,
               decoration: InputDecoration(
-                hintText: 'Wybierz datę',
+                hintText: 'Data',
                 prefixIcon: Icon(Icons.calendar_today),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -128,12 +137,13 @@ class SearchScreen extends StatelessWidget {
               },
             ),
             SizedBox(height: 22),
-            ElevatedButton(
-              onPressed: () {
-                // Tutaj dodaj kod do obsługi przycisku wyszukiwania
-                print('Wyszukaj');
-              },
-              child: Text('Wyszukaj'),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  // Tutaj dodaj kod do obsługi przycisku wyszukiwania
+                },
+                child: Text('Wyszukaj'),
+              ),
             ),
           ],
         ),
@@ -154,11 +164,13 @@ class SearchScreen extends StatelessWidget {
             child: CalendarWidget(),
           ),
           actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Zamknij'),
+            Center(
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Wybierz'),
+              ),
             ),
           ],
         );
@@ -173,7 +185,7 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  late DateTime _selectedDate;
+  late DateTime _currDate;
   late DateTime _rangeStartDate;
   late DateTime _rangeEndDate;
   late EventList<Event> _markedDateMap;
@@ -181,9 +193,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   @override
   void initState() {
     super.initState();
-    _selectedDate = DateTime.now();
-    _rangeStartDate = DateTime.now(); // Ustaw domyślny zakres od teraz
-    _rangeEndDate = DateTime.now();
+    _currDate = DateTime.now();
+    _rangeStartDate = DateTime(3000);
+    _rangeEndDate = DateTime(3000);
     _markedDateMap = EventList<Event>(events: {});
   }
 
@@ -193,27 +205,63 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       onDayPressed: (DateTime date, List<Event> events) {
         _handleDateSelection(date);
       },
-      weekdayTextStyle: TextStyle(color: Colors.green),
+      weekdayTextStyle: TextStyle(color: appTheme.secondaryHeaderColor),
       // Zmiana koloru nazw dni na zielony
-      weekendTextStyle: TextStyle(color: Colors.green),
+      weekendTextStyle: const TextStyle(color: Colors.red),
       weekFormat: false,
-      markedDatesMap: _markedDateMap,
-      selectedDateTime: _selectedDate,
+      markedDatesMap: _generateMarkedDates(),
+      todayButtonColor: appTheme.secondaryHeaderColor,
+      todayBorderColor: appTheme.secondaryHeaderColor,
+      minSelectedDate: _currDate,
+      markedDateCustomShapeBorder: const CircleBorder(
+        side: BorderSide(color: Colors.blue, width: 2.0),
+      ),
       daysHaveCircularBorder: true,
+      firstDayOfWeek: 1
     );
   }
 
   void _handleDateSelection(DateTime date) {
-    // Logika obsługi wyboru zakresu dat
     if (_rangeStartDate.isAfter(date) || _rangeStartDate == date) {
       setState(() {
         _rangeStartDate = date;
-        _rangeEndDate = date; // Zresetuj koniec zakresu do wybranej daty
+        _rangeEndDate = date;
       });
-    } else {
+    } else if (_rangeStartDate.isBefore(date) && _rangeEndDate.isAfter(date)){
+      setState(() {
+        _rangeStartDate = date;
+      });
+    }
+    else {
       setState(() {
         _rangeEndDate = date;
       });
     }
+    _dateValueController.text = "${_rangeStartDate.year}.${_rangeStartDate.month}.${_rangeStartDate.day} - ${_rangeEndDate.year}.${_rangeEndDate.month}.${_rangeEndDate.day}";
+  }
+
+  EventList<Event> _generateMarkedDates() {
+    // Clear existing marked dates
+    _markedDateMap.clear();
+
+    // Mark dates between _rangeStartDate and _rangeEndDate
+    DateTime currentDate = _rangeStartDate;
+    while (currentDate.isBefore(_rangeEndDate) ||
+        currentDate.isAtSameMomentAs(_rangeEndDate)) {
+      _markedDateMap.add(
+        currentDate,
+        Event(
+          date: currentDate,
+          icon: Container(
+            decoration: const BoxDecoration(
+              color: Colors.blue, // Adjust the color as needed
+              shape: BoxShape.circle,
+            ),
+          ),
+        ),
+      );
+      currentDate = currentDate.add(const Duration(days: 1));
+    }
+    return _markedDateMap;
   }
 }

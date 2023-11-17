@@ -9,7 +9,7 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 
 import '../../main.dart';
 
-List<String> categories = <String>['Domy', 'Hotele'];
+List<String> categories = <String>['Hotele', 'Apartamenty'];
 TextEditingController _dateValueController = TextEditingController();
 
 class HomeScreen extends StatelessWidget {
@@ -33,13 +33,16 @@ class AppBarHome extends StatelessWidget {
         child: Scaffold(
             appBar: AppBar(
               title: const Center(
-                child: Text(
-                  'VoyageVoyage',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold, // Add bold style
-                    color: Colors.white, // Text color
-                  ),
+                child: Padding(
+                padding: const EdgeInsets.only(top: 2.0, bottom: 10.0),
+                  child: Text(
+                    'VoyageVoyage',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold, // Add bold style
+                      color: Colors.white, // Text color
+                    ),
+                  )
                 ),
               ),
               scrolledUnderElevation: 4.0,
@@ -62,7 +65,7 @@ class AppBarHome extends StatelessWidget {
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 30.0),
                       child: Tab(
-                        icon: const Icon(Icons.home_filled, size: 24),
+                        icon: const Icon(Icons.hotel_rounded, size: 24),
                         text: categories[0],
                       ),
                     ),
@@ -77,7 +80,7 @@ class AppBarHome extends StatelessWidget {
                       ),
                       padding: const EdgeInsets.symmetric(horizontal: 30.0),
                       child: Tab(
-                        icon: const Icon(Icons.hotel_rounded, size: 24),
+                        icon: const Icon(Icons.home_filled, size: 24),
                         text: categories[1],
                       ),
                     ),
@@ -89,8 +92,13 @@ class AppBarHome extends StatelessWidget {
   }
 }
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends StatefulWidget {
+  @override
+  _SearchScreenState createState() => _SearchScreenState();
+}
 
+class _SearchScreenState extends State<SearchScreen> {
+  String? selectedLocation;
 
   @override
   Widget build(BuildContext context) {
@@ -100,12 +108,29 @@ class SearchScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
+            InputDecorator(
               decoration: InputDecoration(
-                hintText: 'Miejscowość',
+                hintText: 'Lokalizacja',
                 prefixIcon: Icon(Icons.location_on),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  hint: Text('Wybierz Miejscowość'),
+                  value: selectedLocation,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedLocation = newValue;
+                    });
+                  },
+                  items: ['Francja', 'Meksyk', 'Cipa Jasia'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
                 ),
               ),
             ),
@@ -145,12 +170,14 @@ class SearchScreen extends StatelessWidget {
                 child: Text('Wyszukaj'),
               ),
             ),
+            SizedBox(height: 22),
+            if (selectedLocation != null)
+              Text('Wybrana miejscowość: $selectedLocation'),
           ],
         ),
       ),
     );
   }
-
   void _showCalendarDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -202,23 +229,22 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   @override
   Widget build(BuildContext context) {
     return CalendarCarousel<Event>(
-      onDayPressed: (DateTime date, List<Event> events) {
-        _handleDateSelection(date);
-      },
-      weekdayTextStyle: TextStyle(color: appTheme.secondaryHeaderColor),
-      // Zmiana koloru nazw dni na zielony
-      weekendTextStyle: const TextStyle(color: Colors.red),
-      weekFormat: false,
-      markedDatesMap: _generateMarkedDates(),
-      todayButtonColor: appTheme.secondaryHeaderColor,
-      todayBorderColor: appTheme.secondaryHeaderColor,
-      minSelectedDate: _currDate,
-      markedDateCustomShapeBorder: const CircleBorder(
-        side: BorderSide(color: Colors.blue, width: 2.0),
-      ),
-      daysHaveCircularBorder: true,
-      firstDayOfWeek: 1
-    );
+        onDayPressed: (DateTime date, List<Event> events) {
+          _handleDateSelection(date);
+        },
+        weekdayTextStyle: TextStyle(color: appTheme.secondaryHeaderColor),
+        // Zmiana koloru nazw dni na zielony
+        weekendTextStyle: const TextStyle(color: Colors.red),
+        weekFormat: false,
+        markedDatesMap: _generateMarkedDates(),
+        todayButtonColor: appTheme.secondaryHeaderColor,
+        todayBorderColor: appTheme.secondaryHeaderColor,
+        minSelectedDate: _currDate,
+        markedDateCustomShapeBorder: const CircleBorder(
+          side: BorderSide(color: Colors.blue, width: 2.0),
+        ),
+        daysHaveCircularBorder: true,
+        firstDayOfWeek: 1);
   }
 
   void _handleDateSelection(DateTime date) {
@@ -227,17 +253,18 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         _rangeStartDate = date;
         _rangeEndDate = date;
       });
-    } else if (_rangeStartDate.isBefore(date) && _rangeEndDate.isAfter(date)){
+    } else if (_rangeStartDate.isBefore(date) && _rangeEndDate.isAfter(date)) {
       setState(() {
         _rangeStartDate = date;
       });
-    }
-    else {
+    } else {
       setState(() {
         _rangeEndDate = date;
       });
     }
-    _dateValueController.text = "${_rangeStartDate.year}.${_rangeStartDate.month}.${_rangeStartDate.day} - ${_rangeEndDate.year}.${_rangeEndDate.month}.${_rangeEndDate.day}";
+    _dateValueController.text =
+        "${_rangeStartDate.day}.${_rangeStartDate.month}.${_rangeStartDate.year}  -"
+            "  ${_rangeEndDate.day}.${_rangeEndDate.month}.${_rangeEndDate.year}";
   }
 
   EventList<Event> _generateMarkedDates() {

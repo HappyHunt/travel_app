@@ -38,7 +38,7 @@ class _BottomNavState extends State<BottomNav> {
           Icons.favorite_border_outlined,
           color: Colors.black,
         ),
-        label: "Zapisane"));
+        label: "Obserwowane"));
     items.add(BottomNavigationBarItem(
 
         activeIcon: Icon(

@@ -34,7 +34,7 @@ class AppBarHome extends StatelessWidget {
             appBar: AppBar(
               title: const Center(
                 child: Text(
-                  'Travel App',
+                  'VoyageVoyage',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold, // Add bold style

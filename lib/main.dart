@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'Deals.dart';
-import 'HomeScreen.dart';
-import 'Profile.dart';
-import 'WhisList.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'nav/bottom_nav.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,86 +33,5 @@ class MyApp extends StatelessWidget {
       theme: appTheme,
       home: const BottomNav(),
     );
-  }
-}
-
-int sel = 0;
-List<Widget> bodies = [const HomeScreen(), const WishList(), const Deals(), const Profile()];
-
-class BottomNav extends StatefulWidget {
-  const BottomNav({super.key});
-
-  @override
-  State<BottomNav> createState() => _BottomNavState();
-}
-
-class _BottomNavState extends State<BottomNav> {
-  List<BottomNavigationBarItem> createItems() {
-    List<BottomNavigationBarItem> items = [];
-    items.add(BottomNavigationBarItem(
-        activeIcon: Icon(
-          Icons.search,
-          color: appTheme.primaryColor,
-        ),
-        icon: const Icon(
-          Icons.search,
-          color: Colors.black,
-        ),
-        label: "Szukaj"));
-    items.add(BottomNavigationBarItem(
-        activeIcon: Icon(
-          Icons.favorite_border_outlined,
-          color: appTheme.primaryColor,
-        ),
-        icon: const Icon(
-          Icons.favorite_border_outlined,
-          color: Colors.black,
-        ),
-        label: "Zapisane"));
-    items.add(BottomNavigationBarItem(
-
-        activeIcon: Icon(
-          Icons.cases_outlined ,
-          color: appTheme.primaryColor,
-        ),
-        icon: const Icon(
-          Icons.cases_outlined ,
-          color: Colors.black,
-        ),
-        label: "Rezerwacje"));
-    items.add(BottomNavigationBarItem(
-        activeIcon: Icon(
-          Icons.person_outline_outlined,
-          color: appTheme.primaryColor,
-        ),
-        icon: const Icon(
-          Icons.person_outline_outlined,
-          color: Colors.black,
-        ),
-        label: "Profil"));
-    return items;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Center(child: (bodies.elementAt(sel))),
-        bottomNavigationBar: BottomNavigationBar(
-          items: createItems(),
-          unselectedItemColor: Colors.black,
-          selectedItemColor: appTheme.primaryColor,
-          type: BottomNavigationBarType.fixed,
-          showUnselectedLabels: true,
-          showSelectedLabels: true,
-          currentIndex: sel,
-          elevation: 1.5,
-          onTap: (int index) {
-            if (index != sel) {
-              setState(() {
-                sel = index;
-              });
-            }
-          },
-        ));
   }
 }

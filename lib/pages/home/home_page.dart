@@ -170,9 +170,6 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Text('Wyszukaj'),
               ),
             ),
-            SizedBox(height: 22),
-            if (selectedLocation != null)
-              Text('Wybrana miejscowość: $selectedLocation'),
           ],
         ),
       ),

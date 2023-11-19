@@ -22,8 +22,8 @@ class WishList extends StatelessWidget {
             },
             child: _buildWishlistItem(
               tytul: pozycja.tytul,
-              cena: pozycja.cena,
-              okres: pozycja.okres,
+              cena: "Cena: " + pozycja.cena,
+              okres:"Data: " +pozycja.okres,
               lokalizacja: pozycja.lokalizacja,
               zdjecieUrl: pozycja.zdjecieUrl,
             ),

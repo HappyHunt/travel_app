@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,96 +7,98 @@ import 'package:flutter_calendar_carousel/classes/event_list.dart';
 
 import '../../main.dart';
 
-List<String> categories = <String>['Hotele', 'Apartamenty'];
+List<String> categories = ['Hotele', 'Apartamenty'];
 TextEditingController _dateValueController = TextEditingController();
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(child: AppBarHome()),
     );
   }
 }
 
 class AppBarHome extends StatelessWidget {
-  const AppBarHome({super.key});
+  const AppBarHome({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: categories.length,
-        child: Scaffold(
-            appBar: AppBar(
-              title: const Center(
-                child: Padding(
-                padding: const EdgeInsets.only(top: 2.0, bottom: 10.0),
-                  child: Text(
-                    'VoyageVoyage',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold, // Add bold style
-                      color: Colors.white, // Text color
-                    ),
-                  )
+      length: categories.length,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Center(
+            child: Padding(
+              padding: EdgeInsets.only(top: 2.0, bottom: 10.0),
+              child: Text(
+                'VoyageVoyage',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
-              scrolledUnderElevation: 4.0,
-              shadowColor: Theme.of(context).shadowColor,
-              backgroundColor: appTheme.secondaryHeaderColor,
-              bottom: TabBar(
-                labelStyle:
-                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                labelColor: appTheme.scaffoldBackgroundColor,
-                unselectedLabelStyle: const TextStyle(fontSize: 16),
-                indicatorColor: appTheme.scaffoldBackgroundColor,
-                tabs: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                    // Dodaj padding na lewo i prawo
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: appTheme.highlightColor,
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: Tab(
-                        icon: const Icon(Icons.hotel_rounded, size: 24),
-                        text: categories[0],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                    // Dodaj padding na lewo i prawo
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: appTheme.highlightColor,
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: Tab(
-                        icon: const Icon(Icons.home_filled, size: 24),
-                        text: categories[1],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
             ),
-            body: SearchScreen()));
+          ),
+          scrolledUnderElevation: 4.0,
+          shadowColor: Theme.of(context).shadowColor,
+          backgroundColor: appTheme.secondaryHeaderColor,
+          bottom: TabBar(
+            labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            labelColor: appTheme.scaffoldBackgroundColor,
+            unselectedLabelStyle: TextStyle(fontSize: 16),
+            indicatorColor: appTheme.scaffoldBackgroundColor,
+            tabs: categories.map((String category) {
+              return Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: appTheme.highlightColor,
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 30.0),
+                  child: Tab(
+                    icon: category == 'Hotele'
+                        ? Icon(Icons.hotel_rounded, size: 24)
+                        : Icon(Icons.home_filled, size: 24),
+                    text: category,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+        body: const HomeSearchScreen(),
+      ),
+    );
   }
 }
 
-class SearchScreen extends StatefulWidget {
+class HomeSearchScreen extends StatefulWidget {
+  const HomeSearchScreen({Key? key}) : super(key: key);
+
   @override
-  _SearchScreenState createState() => _SearchScreenState();
+  _HomeSearchScreenState createState() => _HomeSearchScreenState();
 }
 
-class _SearchScreenState extends State<SearchScreen> {
+class _HomeSearchScreenState extends State<HomeSearchScreen> {
+  String? selectedCountry;
   String? selectedLocation;
+  String? selectedMealType; // Nowa zmienna dla zakładki Hotele
+  String? selectedApartmentSize; // Nowa zmienna dla zakładki Apartamenty
+  String? hotelOrApartment; // Nowa zmienna do wyboru między Hotele a Apartamenty
+
+  Map<String, List<String>> locationsData = {
+    'Francja': ['Nicea', 'Cannes'],
+    'Meksyk': ['Meksyk City', 'Playa del Carmen'],
+    'Polska': ['Władysławowo', 'Rokietniki górne'],
+  };
+
+  List<String> mealTypes = ['Bez wyżywienia', 'BB', 'HB', 'AI']; // Nowa lista dla zakładki Hotele
+  List<String> apartmentSizes = ['0-35m2', '36-50m2', '+50m2']; // Nowa lista dla zakładki Apartamenty
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +110,94 @@ class _SearchScreenState extends State<SearchScreen> {
           children: [
             InputDecorator(
               decoration: InputDecoration(
-                hintText: 'Lokalizacja',
+                hintText: 'Hotele czy Apartamenty',
+                prefixIcon: Icon(Icons.hotel),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  hint: Text('Hotele czy Apartamenty'),
+                  value: hotelOrApartment,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      hotelOrApartment = newValue;
+                      selectedCountry = null;
+                      selectedLocation = null;
+                      selectedMealType = null;
+                      selectedApartmentSize = null;
+                    });
+                  },
+                  items: categories.map((String option) {
+                    return DropdownMenuItem<String>(
+                      value: option,
+                      child: Text(option),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            if (hotelOrApartment == 'Hotele') ...[
+              InputDecorator(
+                decoration: InputDecoration(
+                  hintText: 'Rodzaj wyżywienia',
+                  prefixIcon: Icon(Icons.restaurant),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    hint: Text('Rodzaj wyżywienia'),
+                    value: selectedMealType,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedMealType = newValue;
+                      });
+                    },
+                    items: mealTypes.map((String mealType) {
+                      return DropdownMenuItem<String>(
+                        value: mealType,
+                        child: Text(mealType),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ] else if (hotelOrApartment == 'Apartamenty') ...[
+              InputDecorator(
+                decoration: InputDecoration(
+                  hintText: 'Metraż',
+                  prefixIcon: Icon(Icons.aspect_ratio),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    hint: Text('Metraż'),
+                    value: selectedApartmentSize,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedApartmentSize = newValue;
+                      });
+                    },
+                    items: apartmentSizes.map((String size) {
+                      return DropdownMenuItem<String>(
+                        value: size,
+                        child: Text(size),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ],
+            SizedBox(height: 20),
+            InputDecorator(
+              decoration: InputDecoration(
+                hintText: 'Kraj',
                 prefixIcon: Icon(Icons.location_on),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
@@ -118,23 +205,51 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
-                  hint: Text('Wybierz Miejscowość'),
+                  hint: Text('Kraj'),
+                  value: selectedCountry,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedCountry = newValue;
+                      selectedLocation = null;
+                    });
+                  },
+                  items: locationsData.keys.map((String country) {
+                    return DropdownMenuItem<String>(
+                      value: country,
+                      child: Text(country),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            InputDecorator(
+              decoration: InputDecoration(
+                hintText: 'Miejscowość',
+                prefixIcon: Icon(Icons.location_on),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  hint: Text('Miejscowość'),
                   value: selectedLocation,
                   onChanged: (String? newValue) {
                     setState(() {
                       selectedLocation = newValue;
                     });
                   },
-                  items: ['Francja', 'Meksyk', 'Cipa Jasia'].map((String value) {
+                  items: locationsData[selectedCountry]?.map((String location) {
                     return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+                      value: location,
+                      child: Text(location),
                     );
                   }).toList(),
                 ),
               ),
             ),
-            SizedBox(height: 22),
+            SizedBox(height: 20),
             TextField(
               decoration: InputDecoration(
                 hintText: 'Liczba osób',
@@ -146,7 +261,7 @@ class _SearchScreenState extends State<SearchScreen> {
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             ),
-            SizedBox(height: 22),
+            SizedBox(height: 20),
             TextFormField(
               controller: _dateValueController,
               readOnly: true,
@@ -161,7 +276,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 _showCalendarDialog(context);
               },
             ),
-            SizedBox(height: 22),
+            SizedBox(height: 20),
             Center(
               child: ElevatedButton(
                 onPressed: () {
@@ -175,6 +290,7 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
     );
   }
+
   void _showCalendarDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -182,9 +298,7 @@ class _SearchScreenState extends State<SearchScreen> {
         return AlertDialog(
           content: Container(
             width: MediaQuery.of(context).size.width * 0.9,
-            // Maksymalna szerokość
             height: MediaQuery.of(context).size.height * 0.4,
-            // Maksymalna wysokość // Ustaw wysokość kontenera, dostosuj do potrzeb
             child: CalendarWidget(),
           ),
           actions: [
@@ -226,22 +340,22 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   @override
   Widget build(BuildContext context) {
     return CalendarCarousel<Event>(
-        onDayPressed: (DateTime date, List<Event> events) {
-          _handleDateSelection(date);
-        },
-        weekdayTextStyle: TextStyle(color: appTheme.secondaryHeaderColor),
-        // Zmiana koloru nazw dni na zielony
-        weekendTextStyle: const TextStyle(color: Colors.red),
-        weekFormat: false,
-        markedDatesMap: _generateMarkedDates(),
-        todayButtonColor: appTheme.secondaryHeaderColor,
-        todayBorderColor: appTheme.secondaryHeaderColor,
-        minSelectedDate: _currDate,
-        markedDateCustomShapeBorder: const CircleBorder(
-          side: BorderSide(color: Colors.blue, width: 2.0),
-        ),
-        daysHaveCircularBorder: true,
-        firstDayOfWeek: 1);
+      onDayPressed: (DateTime date, List<Event> events) {
+        _handleDateSelection(date);
+      },
+      weekdayTextStyle: TextStyle(color: appTheme.secondaryHeaderColor),
+      weekendTextStyle: const TextStyle(color: Colors.red),
+      weekFormat: false,
+      markedDatesMap: _generateMarkedDates(),
+      todayButtonColor: appTheme.secondaryHeaderColor,
+      todayBorderColor: appTheme.secondaryHeaderColor,
+      minSelectedDate: _currDate,
+      markedDateCustomShapeBorder: const CircleBorder(
+        side: BorderSide(color: Colors.blue, width: 2.0),
+      ),
+      daysHaveCircularBorder: true,
+      firstDayOfWeek: 1,
+    );
   }
 
   void _handleDateSelection(DateTime date) {
@@ -260,15 +374,13 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       });
     }
     _dateValueController.text =
-        "${_rangeStartDate.day}.${_rangeStartDate.month}.${_rangeStartDate.year}  -"
-            "  ${_rangeEndDate.day}.${_rangeEndDate.month}.${_rangeEndDate.year}";
+    "${_rangeStartDate.day}.${_rangeStartDate.month}.${_rangeStartDate.year}  -"
+        "  ${_rangeEndDate.day}.${_rangeEndDate.month}.${_rangeEndDate.year}";
   }
 
   EventList<Event> _generateMarkedDates() {
-    // Clear existing marked dates
     _markedDateMap.clear();
 
-    // Mark dates between _rangeStartDate and _rangeEndDate
     DateTime currentDate = _rangeStartDate;
     while (currentDate.isBefore(_rangeEndDate) ||
         currentDate.isAtSameMomentAs(_rangeEndDate)) {
@@ -278,7 +390,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           date: currentDate,
           icon: Container(
             decoration: const BoxDecoration(
-              color: Colors.blue, // Adjust the color as needed
+              color: Colors.blue,
               shape: BoxShape.circle,
             ),
           ),

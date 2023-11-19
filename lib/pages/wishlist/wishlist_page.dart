@@ -1,36 +1,44 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_app/pages/wishlist/wishlist_data.dart';
+import 'wishlist_provider.dart';
 
 class WishList extends StatelessWidget {
   const WishList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    List<PozycjaNaLiscieZyczen> pozycjeNaLiscieZyczen = WishlistProvider.pobierzDane();
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista obserwowanych ofert'),
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
-        children: <Widget>[
-          _buildWishlistItem(
-            title: 'Malediwy - dupa sraka',
-            price: 'Cena: 3999 zł',
-            term: '19.04.2023 - 29.04.2023',
-            location: 'Chaka laka, Malediwy',
-          ),
-
-          // Add more wishlist items as needed
-        ],
+        children: pozycjeNaLiscieZyczen.map((pozycja) {
+          return GestureDetector(
+            onTap: () {
+              _showOfferDetails(context, pozycja);
+            },
+            child: _buildWishlistItem(
+              tytul: pozycja.tytul,
+              cena: pozycja.cena,
+              okres: pozycja.okres,
+              lokalizacja: pozycja.lokalizacja,
+              zdjecieUrl: pozycja.zdjecieUrl,
+            ),
+          );
+        }).toList(),
       ),
     );
   }
 
   Widget _buildWishlistItem({
-    required String title,
-    required String price,
-    required String term,
-    required String location,
+    required String tytul,
+    required String cena,
+    required String okres,
+    required String lokalizacja,
+    required String zdjecieUrl,
   }) {
     return Card(
       child: Padding(
@@ -38,40 +46,103 @@ class WishList extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            // Image
+            // Obraz
             Container(
               width: 80.0,
               height: 80.0,
               decoration: BoxDecoration(
-                image: const DecorationImage(
-                  image: AssetImage('assets/m1.jpg'),
+                image: DecorationImage(
+                  image: AssetImage(zdjecieUrl),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.circular(8.0),
               ),
             ),
             const SizedBox(width: 16.0),
-            // Details
+            // Szczegóły
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    title,
+                    tytul,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18.0,
                     ),
                   ),
                   const SizedBox(height: 8.0),
-                  Text(price),
-                  Text(term),
-                  Text(location),
+                  Text(cena),
+                  Text(okres),
+                  Text(lokalizacja),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showOfferDetails(BuildContext context, PozycjaNaLiscieZyczen pozycja) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => OfferDetailsScreen(pozycja: pozycja),
+      ),
+    );
+  }
+}
+
+class OfferDetailsScreen extends StatelessWidget {
+  final PozycjaNaLiscieZyczen pozycja;
+
+  const OfferDetailsScreen({Key? key, required this.pozycja}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Szczegóły oferty'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.asset(
+            pozycja.zdjecieUrl,
+            width: double.infinity,
+            height: 200.0,
+            fit: BoxFit.cover,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  pozycja.tytul,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
+                  ),
+                ),
+                SizedBox(height: 8.0),
+                Text('Cena: ${pozycja.cena}'),
+                Text('Okres: ${pozycja.okres}'),
+                Text('Lokalizacja: ${pozycja.lokalizacja}'),
+              ],
+            ),
+          ),
+          Spacer(),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: () {
+                // Dodaj tutaj obsługę przycisku Rezerwuj
+              },
+              child: Text('Rezerwuj'),
+            ),
+          ),
+        ],
       ),
     );
   }

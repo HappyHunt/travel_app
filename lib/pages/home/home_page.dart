@@ -98,7 +98,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
   };
 
   List<String> mealTypes = ['Bez wyżywienia', 'BB', 'HB', 'AI']; // Nowa lista dla zakładki Hotele
-  List<String> apartmentSizes = ['0-35m2', '36-50m2', '+50m2']; // Nowa lista dla zakładki Apartamenty
+  List<String> apartmentSizes = ['0-35m2', '36-50m2', '50m2 i więcej']; // Nowa lista dla zakładki Apartamenty
 
   @override
   Widget build(BuildContext context) {
@@ -138,62 +138,6 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            if (hotelOrApartment == 'Hotele') ...[
-              InputDecorator(
-                decoration: InputDecoration(
-                  hintText: 'Rodzaj wyżywienia',
-                  prefixIcon: Icon(Icons.restaurant),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    hint: Text('Rodzaj wyżywienia'),
-                    value: selectedMealType,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedMealType = newValue;
-                      });
-                    },
-                    items: mealTypes.map((String mealType) {
-                      return DropdownMenuItem<String>(
-                        value: mealType,
-                        child: Text(mealType),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-            ] else if (hotelOrApartment == 'Apartamenty') ...[
-              InputDecorator(
-                decoration: InputDecoration(
-                  hintText: 'Metraż',
-                  prefixIcon: Icon(Icons.aspect_ratio),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    hint: Text('Metraż'),
-                    value: selectedApartmentSize,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedApartmentSize = newValue;
-                      });
-                    },
-                    items: apartmentSizes.map((String size) {
-                      return DropdownMenuItem<String>(
-                        value: size,
-                        child: Text(size),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-            ],
             SizedBox(height: 20),
             InputDecorator(
               decoration: InputDecoration(
@@ -277,6 +221,62 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
               },
             ),
             SizedBox(height: 20),
+            if (hotelOrApartment == 'Hotele') ...[
+              InputDecorator(
+                decoration: InputDecoration(
+                  hintText: 'Rodzaj wyżywienia',
+                  prefixIcon: Icon(Icons.restaurant),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    hint: Text('Rodzaj wyżywienia'),
+                    value: selectedMealType,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedMealType = newValue;
+                      });
+                    },
+                    items: mealTypes.map((String mealType) {
+                      return DropdownMenuItem<String>(
+                        value: mealType,
+                        child: Text(mealType),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ] else if (hotelOrApartment == 'Apartamenty') ...[
+              InputDecorator(
+                decoration: InputDecoration(
+                  hintText: 'Metraż',
+                  prefixIcon: Icon(Icons.aspect_ratio),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    hint: Text('Metraż'),
+                    value: selectedApartmentSize,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedApartmentSize = newValue;
+                      });
+                    },
+                    items: apartmentSizes.map((String size) {
+                      return DropdownMenuItem<String>(
+                        value: size,
+                        child: Text(size),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+            ],
+            SizedBox(height: 20),
             Center(
               child: ElevatedButton(
                 onPressed: () {
@@ -298,7 +298,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
         return AlertDialog(
           content: Container(
             width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.4,
+            height: MediaQuery.of(context).size.height * 0.3,
             child: CalendarWidget(),
           ),
           actions: [

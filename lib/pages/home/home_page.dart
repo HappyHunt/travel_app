@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
-import 'package:flutter_calendar_carousel/classes/event_list.dart';
 
 import '../../main.dart';
 
@@ -30,24 +28,18 @@ class AppBarHome extends StatelessWidget {
       length: categories.length,
       child: Scaffold(
         appBar: AppBar(
-          title: const Center(
+          title: Center(
             child: Padding(
-              padding: EdgeInsets.only(top: 2.0, bottom: 10.0),
-              child: Text(
-                'VoyageVoyage',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+              padding: EdgeInsets.symmetric(vertical: 600),
+              child: Image.asset('assets/logo.jpg', height: 500, width: double.infinity,
               ),
             ),
           ),
-          scrolledUnderElevation: 4.0,
+          scrolledUnderElevation: 2.0,
           shadowColor: Theme.of(context).shadowColor,
           backgroundColor: appTheme.secondaryHeaderColor,
           bottom: TabBar(
-            labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             labelColor: appTheme.scaffoldBackgroundColor,
             unselectedLabelStyle: TextStyle(fontSize: 16),
             indicatorColor: appTheme.scaffoldBackgroundColor,
@@ -97,8 +89,8 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
     'Polska': ['Władysławowo', 'Rokietniki górne'],
   };
 
-  List<String> mealTypes = ['Bez wyżywienia', 'BB', 'HB', 'AI']; // Nowa lista dla zakładki Hotele
-  List<String> apartmentSizes = ['0-35m2', '36-50m2', '50m2 i więcej']; // Nowa lista dla zakładki Apartamenty
+  List<String> mealTypes = ['Bez wyżywienia', 'BB', 'HB', 'AI'];
+  List<String> apartmentSizes = ['0-35m2', '36-50m2', '50m2 i więcej'];
 
   @override
   Widget build(BuildContext context) {
@@ -298,7 +290,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
         return AlertDialog(
           content: Container(
             width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.3,
+            height: MediaQuery.of(context).size.height * 0.38,
             child: CalendarWidget(),
           ),
           actions: [

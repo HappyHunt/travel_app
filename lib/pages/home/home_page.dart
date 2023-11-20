@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
-import 'package:flutter_calendar_carousel/classes/event.dart';
 
 import '../../main.dart';
+import 'app_bar.dart';
+import 'calendar_marked.dart';
 
-List<String> categories = ['Hotele', 'Apartamenty'];
-TextEditingController _dateValueController = TextEditingController();
+TextEditingController dateValueController = TextEditingController();
+var hotelOrApartment = 0;
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,56 +15,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(child: AppBarHome()),
-    );
-  }
-}
-
-class AppBarHome extends StatelessWidget {
-  const AppBarHome({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: categories.length,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 600),
-              child: Image.asset('assets/logo.jpg', height: 500, width: double.infinity,
-              ),
-            ),
-          ),
-          scrolledUnderElevation: 2.0,
-          shadowColor: Theme.of(context).shadowColor,
-          backgroundColor: appTheme.secondaryHeaderColor,
-          bottom: TabBar(
-            labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            labelColor: appTheme.scaffoldBackgroundColor,
-            unselectedLabelStyle: TextStyle(fontSize: 16),
-            indicatorColor: appTheme.scaffoldBackgroundColor,
-            tabs: categories.map((String category) {
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 2.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: appTheme.highlightColor,
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 30.0),
-                  child: Tab(
-                    icon: category == 'Hotele'
-                        ? Icon(Icons.hotel_rounded, size: 24)
-                        : Icon(Icons.home_filled, size: 24),
-                    text: category,
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ),
-        body: const HomeSearchScreen(),
-      ),
     );
   }
 }
@@ -79,18 +29,23 @@ class HomeSearchScreen extends StatefulWidget {
 class _HomeSearchScreenState extends State<HomeSearchScreen> {
   String? selectedCountry;
   String? selectedLocation;
-  String? selectedMealType; // Nowa zmienna dla zakładki Hotele
-  String? selectedApartmentSize; // Nowa zmienna dla zakładki Apartamenty
-  String? hotelOrApartment; // Nowa zmienna do wyboru między Hotele a Apartamenty
+  String? selectedMealType;
+  String? selectedApartmentSize;
+
+  void _setStateHomeOrApartment(String? newValue) {
+    setState(() {
+      selectedMealType = newValue;
+      selectedApartmentSize = newValue;
+      print(selectedApartmentSize);
+      print(selectedMealType);
+    });
+  }
 
   Map<String, List<String>> locationsData = {
     'Francja': ['Nicea', 'Cannes'],
     'Meksyk': ['Meksyk City', 'Playa del Carmen'],
     'Polska': ['Władysławowo', 'Rokietniki górne'],
   };
-
-  List<String> mealTypes = ['Bez wyżywienia', 'BB', 'HB', 'AI'];
-  List<String> apartmentSizes = ['0-35m2', '36-50m2', '50m2 i więcej'];
 
   @override
   Widget build(BuildContext context) {
@@ -100,96 +55,72 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            InputDecorator(
-              decoration: InputDecoration(
-                hintText: 'Hotele czy Apartamenty',
-                prefixIcon: Icon(Icons.hotel),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+            SizedBox(
+              height: 70.0,
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  hintText: 'Kraj',
+                  prefixIcon: const Icon(Icons.location_on),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                 ),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  hint: Text('Hotele czy Apartamenty'),
-                  value: hotelOrApartment,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      hotelOrApartment = newValue;
-                      selectedCountry = null;
-                      selectedLocation = null;
-                      selectedMealType = null;
-                      selectedApartmentSize = null;
-                    });
-                  },
-                  items: categories.map((String option) {
-                    return DropdownMenuItem<String>(
-                      value: option,
-                      child: Text(option),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            InputDecorator(
-              decoration: InputDecoration(
-                hintText: 'Kraj',
-                prefixIcon: Icon(Icons.location_on),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  hint: Text('Kraj'),
-                  value: selectedCountry,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedCountry = newValue;
-                      selectedLocation = null;
-                    });
-                  },
-                  items: locationsData.keys.map((String country) {
-                    return DropdownMenuItem<String>(
-                      value: country,
-                      child: Text(country),
-                    );
-                  }).toList(),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    hint: const Text('Kraj'),
+                    value: selectedCountry,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedCountry = newValue;
+                        selectedLocation = null;
+                      });
+                    },
+                    items: locationsData.keys.map((String country) {
+                      return DropdownMenuItem<String>(
+                        value: country,
+                        child: Text(country),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: 20),
-            InputDecorator(
-              decoration: InputDecoration(
-                hintText: 'Miejscowość',
-                prefixIcon: Icon(Icons.location_on),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+            const SizedBox(height: 20),
+            SizedBox(
+              height: 70.0,
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  hintText: 'Miejscowość',
+                  prefixIcon: const Icon(Icons.location_on),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                 ),
-              ),
-              child: DropdownButtonHideUnderline(
-                child: DropdownButton<String>(
-                  hint: Text('Miejscowość'),
-                  value: selectedLocation,
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedLocation = newValue;
-                    });
-                  },
-                  items: locationsData[selectedCountry]?.map((String location) {
-                    return DropdownMenuItem<String>(
-                      value: location,
-                      child: Text(location),
-                    );
-                  }).toList(),
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton<String>(
+                    hint: const Text('Miejscowość'),
+                    value: selectedLocation,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        selectedLocation = newValue;
+                      });
+                    },
+                    items:
+                        locationsData[selectedCountry]?.map((String location) {
+                      return DropdownMenuItem<String>(
+                        value: location,
+                        child: Text(location),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
               decoration: InputDecoration(
                 hintText: 'Liczba osób',
-                prefixIcon: Icon(Icons.person),
+                prefixIcon: const Icon(Icons.person),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -197,13 +128,13 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextFormField(
-              controller: _dateValueController,
+              controller: dateValueController,
               readOnly: true,
               decoration: InputDecoration(
                 hintText: 'Data',
-                prefixIcon: Icon(Icons.calendar_today),
+                prefixIcon: const Icon(Icons.calendar_today),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10.0),
                 ),
@@ -212,69 +143,28 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                 _showCalendarDialog(context);
               },
             ),
-            SizedBox(height: 20),
-            if (hotelOrApartment == 'Hotele') ...[
-              InputDecorator(
-                decoration: InputDecoration(
-                  hintText: 'Rodzaj wyżywienia',
-                  prefixIcon: Icon(Icons.restaurant),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    hint: Text('Rodzaj wyżywienia'),
-                    value: selectedMealType,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedMealType = newValue;
-                      });
-                    },
-                    items: mealTypes.map((String mealType) {
-                      return DropdownMenuItem<String>(
-                        value: mealType,
-                        child: Text(mealType),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-            ] else if (hotelOrApartment == 'Apartamenty') ...[
-              InputDecorator(
-                decoration: InputDecoration(
-                  hintText: 'Metraż',
-                  prefixIcon: Icon(Icons.aspect_ratio),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    hint: Text('Metraż'),
-                    value: selectedApartmentSize,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedApartmentSize = newValue;
-                      });
-                    },
-                    items: apartmentSizes.map((String size) {
-                      return DropdownMenuItem<String>(
-                        value: size,
-                        child: Text(size),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-            ],
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Center(
-              child: ElevatedButton(
-                onPressed: () {
+              child: SizedBox(
+                width: double.infinity, // przycisk na całą szerokość
+                child: ElevatedButton(
+                  onPressed: () {
                   // Tutaj dodaj kod do obsługi przycisku wyszukiwania
-                },
-                child: Text('Wyszukaj'),
+                    },
+                  style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0), // wewnętrzny padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0), // zaokrąglenie narożników
+                    ),
+                    backgroundColor: appTheme.secondaryHeaderColor,
+                  ),
+                  child: const Text('Wyszukaj',
+                    style: TextStyle(
+                    fontSize: 18.0, // rozmiar czcionki
+                    color: Colors.white,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],
@@ -299,7 +189,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: Text('Wybierz'),
+                child: const Text('Wybierz'),
               ),
             ),
           ],
@@ -309,87 +199,4 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
   }
 }
 
-class CalendarWidget extends StatefulWidget {
-  @override
-  _CalendarWidgetState createState() => _CalendarWidgetState();
-}
 
-class _CalendarWidgetState extends State<CalendarWidget> {
-  late DateTime _currDate;
-  late DateTime _rangeStartDate;
-  late DateTime _rangeEndDate;
-  late EventList<Event> _markedDateMap;
-
-  @override
-  void initState() {
-    super.initState();
-    _currDate = DateTime.now();
-    _rangeStartDate = DateTime(3000);
-    _rangeEndDate = DateTime(3000);
-    _markedDateMap = EventList<Event>(events: {});
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return CalendarCarousel<Event>(
-      onDayPressed: (DateTime date, List<Event> events) {
-        _handleDateSelection(date);
-      },
-      weekdayTextStyle: TextStyle(color: appTheme.secondaryHeaderColor),
-      weekendTextStyle: const TextStyle(color: Colors.red),
-      weekFormat: false,
-      markedDatesMap: _generateMarkedDates(),
-      todayButtonColor: appTheme.secondaryHeaderColor,
-      todayBorderColor: appTheme.secondaryHeaderColor,
-      minSelectedDate: _currDate,
-      markedDateCustomShapeBorder: const CircleBorder(
-        side: BorderSide(color: Colors.blue, width: 2.0),
-      ),
-      daysHaveCircularBorder: true,
-      firstDayOfWeek: 1,
-    );
-  }
-
-  void _handleDateSelection(DateTime date) {
-    if (_rangeStartDate.isAfter(date) || _rangeStartDate == date) {
-      setState(() {
-        _rangeStartDate = date;
-        _rangeEndDate = date;
-      });
-    } else if (_rangeStartDate.isBefore(date) && _rangeEndDate.isAfter(date)) {
-      setState(() {
-        _rangeStartDate = date;
-      });
-    } else {
-      setState(() {
-        _rangeEndDate = date;
-      });
-    }
-    _dateValueController.text =
-    "${_rangeStartDate.day}.${_rangeStartDate.month}.${_rangeStartDate.year}  -"
-        "  ${_rangeEndDate.day}.${_rangeEndDate.month}.${_rangeEndDate.year}";
-  }
-
-  EventList<Event> _generateMarkedDates() {
-    _markedDateMap.clear();
-
-    DateTime currentDate = _rangeStartDate;
-    while (currentDate.isBefore(_rangeEndDate) ||
-        currentDate.isAtSameMomentAs(_rangeEndDate)) {
-      _markedDateMap.add(
-        currentDate,
-        Event(
-          date: currentDate,
-          icon: Container(
-            decoration: const BoxDecoration(
-              color: Colors.blue,
-              shape: BoxShape.circle,
-            ),
-          ),
-        ),
-      );
-      currentDate = currentDate.add(const Duration(days: 1));
-    }
-    return _markedDateMap;
-  }
-}

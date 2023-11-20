@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'auth/auth.dart';
 import 'firebase_options.dart';
-import 'nav/bottom_nav.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(
+    // ChangeNotifierProvider(
+    //   create: (context) => AuthProvider(),
+    //   child:
+      MyApp(),
+    // ),
+  );
 }
 
 ThemeData appTheme = ThemeData(
@@ -31,7 +37,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Teleporting',
       theme: appTheme,
-      home: const BottomNav(),
-    );
+      home:
+      // ChangeNotifierProvider(
+      //   create: (context) => AuthProvider(),
+      //   child:
+        AuthPage(),
+   );
+    //     routes: {
+    //       // "/route": (context) => const HomeScreen(),
+    //     }
+    // );
   }
 }
+
+// class HotelOrApartmentState {
+//   static int hotelOrApartment = 0;
+//
+//   static void setHotelOrApartment(int newValue) {
+//     hotelOrApartment = newValue;
+//   }
+// }

@@ -2,7 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final void Function()? onPressed;
+  const LoginPage({super.key,required this.onPressed});
 
   @override
   State<StatefulWidget> createState() => _LoginPageState();
@@ -96,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   height: 45,
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: widget.onPressed,
                       child: const Text("Zarejestruj")
                   ),
                 )

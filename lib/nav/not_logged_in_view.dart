@@ -40,7 +40,7 @@ class NotLoggedInView extends StatelessWidget {
                   const SizedBox(height: 32.0),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(context, "/login");
+                      Navigator.pushNamed(context, "/login-or-signup");
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),

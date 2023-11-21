@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:travel_app/nav/bottom_nav.dart';
-import 'package:travel_app/pages/home/home_page.dart';
+import 'package:travel_app/pages/login/login_or_sign_up.dart';
 import 'package:travel_app/pages/login/login_page.dart';
-import 'auth/auth.dart';
+import 'package:travel_app/pages/login/sign_up_page.dart';
 import 'firebase_options.dart';
 
 void main() async{
@@ -12,13 +12,7 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(
-    // ChangeNotifierProvider(
-    //   create: (context) => AuthProvider(),
-    //   child:
-      MyApp(),
-    // ),
-  );
+  runApp(const MyApp());
 }
 
 ThemeData appTheme = ThemeData(
@@ -38,15 +32,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Teleporting',
+      title: 'VoyageVoyage',
       theme: appTheme,
-      home:
+      home: BottomNav(),
       // ChangeNotifierProvider(
       //   create: (context) => AuthProvider(),
       //   child:
-        BottomNav(),
+ //       BottomNav(),
         routes: {
-          "/login": (context) => const LoginPage(),
+          "/login-or-signup": (context) => const LoginAndSignUp(),
           "/nav": (context) => const BottomNav(),
         }
     );

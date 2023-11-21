@@ -40,10 +40,7 @@ class NotLoggedInView extends StatelessWidget {
                   const SizedBox(height: 32.0),
                   ElevatedButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
+                      Navigator.pushNamed(context, "/login");
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),

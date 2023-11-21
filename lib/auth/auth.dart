@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:travel_app/pages/home/home_page.dart';
+import 'package:travel_app/nav/bottom_nav.dart';
 import 'package:travel_app/pages/login/login_page.dart';
 
 class AuthPage extends StatelessWidget {
@@ -17,8 +17,7 @@ class AuthPage extends StatelessWidget {
             return const CircularProgressIndicator();
           }else{
             if (snapshot.hasData){
-              print("ELO");
-              return const HomeScreen();
+              return const BottomNav();
             }else{
               return const LoginPage();
             }

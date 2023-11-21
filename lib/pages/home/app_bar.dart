@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -19,12 +18,6 @@ class _AppBarHomeState extends State<AppBarHome> {
       length: categories.length,
       child: Scaffold(
         appBar: AppBar(
-          actions: [
-            IconButton(onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-            },
-            icon: const Icon(Icons.login)),
-          ],
           title: Center(
             child: Image.asset('assets/logo.jpg',
                 height: 120, width: double.infinity),

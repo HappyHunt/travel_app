@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:travel_app/nav/bottom_nav.dart';
+import 'package:travel_app/pages/home/home_page.dart';
+import 'package:travel_app/pages/login/login_page.dart';
 import 'auth/auth.dart';
 import 'firebase_options.dart';
 
@@ -41,12 +44,12 @@ class MyApp extends StatelessWidget {
       // ChangeNotifierProvider(
       //   create: (context) => AuthProvider(),
       //   child:
-        AuthPage(),
-   );
-    //     routes: {
-    //       // "/route": (context) => const HomeScreen(),
-    //     }
-    // );
+        BottomNav(),
+        routes: {
+          "/login": (context) => const LoginPage(),
+          "/nav": (context) => const BottomNav(),
+        }
+    );
   }
 }
 

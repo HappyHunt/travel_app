@@ -1,13 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:travel_app/nav/not_logged_in_view.dart';
 
-import '../auth/auth.dart';
 import '../main.dart';
 import '../pages/deals/deals_page.dart';
 import '../pages/home/home_page.dart';
 import '../pages/profile/profile_page.dart';
 import '../pages/wishlist/wishlist_page.dart';
+import 'not_logged_in_view.dart';
 
 int sel = 0;
 List<Widget> bodies = [const HomeScreen(), const WishList(), const Deals(), const Profile()];
@@ -77,15 +76,17 @@ class _BottomNavState extends State<BottomNav> {
     context = context;
 
     return Scaffold(
-      // body: Center(
-      //   child: Consumer<AuthProvider>(
-      //     builder: (context, authProvider, child) {
-      //       bool isLoggedIn = authProvider.isLoggedIn;
-      //       print(isLoggedIn);
-      //       return isLoggedIn || sel == 0 ? bodies.elementAt(sel) : NotLoggedInView();
-      //     },
-      //   ),
-      // ),
+      // body: Center(child: (bodies.elementAt(sel))),
+      body: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting){
+              return const CircularProgressIndicator();
+            }else{
+                return snapshot.hasData || sel == 0 ? bodies.elementAt(sel) : NotLoggedInView();
+            }
+          }
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: createItems(),
         unselectedItemColor: Colors.black,

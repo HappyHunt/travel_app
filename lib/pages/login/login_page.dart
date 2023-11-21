@@ -27,6 +27,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         isLoading = false;
       });
+      Navigator.pushNamed(context, "/nav");
     } on FirebaseAuthException catch (e) {
       setState(() {
         isLoading = false;

@@ -97,7 +97,8 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mój profil'),
+        title: const Text('Mój profil', style: TextStyle(color: Colors.white)),
+        backgroundColor: appTheme.secondaryHeaderColor,
       ),
       body: Center(
         child: Column(

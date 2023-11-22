@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../../main.dart';
 import 'home_page.dart';
 
-List<String> categories = ['Hotele', 'Apartamenty'];
+List<String> categories = ['Wypoczynek', 'Objazdówki'];
 
 class AppBarHome extends StatefulWidget {
   @override
@@ -19,7 +19,7 @@ class _AppBarHomeState extends State<AppBarHome> {
       child: Scaffold(
         appBar: AppBar(
           title: Center(
-            child: Image.asset('assets/logo.jpg',
+            child: Image.network('https://firebasestorage.googleapis.com/v0/b/voyagevoyage-app.appspot.com/o/logo.png?alt=media&token=18b15c1b-c3bd-4d88-a92f-9050e2a50026',
                 height: 120, width: double.infinity),
           ),
           toolbarHeight: 120.0,
@@ -45,9 +45,9 @@ class _AppBarHomeState extends State<AppBarHome> {
                   //ikonki hotel itp
                   width: 130.0,
                   child: Tab(
-                    icon: category == 'Hotele'
-                        ? const Icon(Icons.hotel_rounded, size: 24)
-                        : const Icon(Icons.home_filled, size: 24),
+                    icon: category == 'Wypoczynek'
+                        ? const Icon(Icons.beach_access, size: 24)
+                        : const Icon(Icons.travel_explore, size: 24),
                     text: category,
                   ),
                 ),

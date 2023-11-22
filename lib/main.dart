@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:travel_app/nav/bottom_nav.dart';
 import 'package:travel_app/pages/login/login_or_sign_up.dart';
-import 'package:travel_app/pages/login/login_page.dart';
-import 'package:travel_app/pages/login/sign_up_page.dart';
 import 'firebase_options.dart';
 
 void main() async{
@@ -22,7 +20,6 @@ ThemeData appTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFF5F5F5)),
   scaffoldBackgroundColor: const Color(0xFFF5F5F5), // Kolor tła Scaffold
   shadowColor: Colors.grey, // Kolor cienia
-  dialogBackgroundColor: const Color(0xF06BCC9B),
   indicatorColor: Colors.white,
   useMaterial3: true,
 );
@@ -37,14 +34,10 @@ class MyApp extends StatelessWidget {
       title: 'VoyageVoyage',
       theme: appTheme,
       home: BottomNav(),
-      // ChangeNotifierProvider(
-      //   create: (context) => AuthProvider(),
-      //   child:
- //       BottomNav(),
-        routes: {
-          "/login-or-signup": (context) => const LoginAndSignUp(),
-          "/nav": (context) => const BottomNav(),
-        }
+      routes: {
+        "/login-or-signup": (context) => const LoginAndSignUp(),
+        "/nav": (context) => const BottomNav(),
+      }
     );
   }
 }

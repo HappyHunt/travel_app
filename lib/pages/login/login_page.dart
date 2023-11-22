@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         isLoading = false;
       });
-      Navigator.pushNamed(context, "/nav");
+      Navigator.of(context).pop();
     } on FirebaseAuthException catch (e) {
       setState(() {
         isLoading = false;
@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
               end: Alignment.bottomCenter,
               colors: [
                 appTheme.secondaryHeaderColor,
-                appTheme.dialogBackgroundColor
+                const Color(0xF06BCC9B)
               ],
             ),
           ),
@@ -76,6 +76,10 @@ class _LoginPageState extends State<LoginPage> {
                       OverflowBar(
                         overflowSpacing: 20,
                         children: [
+                          Center(
+                            child: Image.network('https://firebasestorage.googleapis.com/v0/b/voyagevoyage-app.appspot.com/o/logo.png?alt=media&token=18b15c1b-c3bd-4d88-a92f-9050e2a50026',
+                                height: 120, width: double.infinity),
+                          ),
                           TextFormField(
                             controller: _usernameController,
                             style: TextStyle(color: appTheme.indicatorColor),
@@ -102,6 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                               }
                               return null;
                             },
+                            obscureText: true,
                             decoration: InputDecoration(
                               labelText: "Hasło",
                               labelStyle: TextStyle(color: appTheme.indicatorColor),

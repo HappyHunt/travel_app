@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:travel_app/pages/wishlist/wishlist_data.dart';
-import 'wishlist_provider.dart';
+import 'package:travel_app/main.dart';
+import '../offers/offers_data.dart';
+import '../offers/offers_provider.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class WishList extends StatelessWidget {
   const WishList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<PozycjaNaLiscieZyczen> pozycjeNaLiscieZyczen = WishlistProvider.pobierzDane();
+    List<Offer> observedOffer = OfferProvider.readOffersData();
 
     return Scaffold(
       appBar: AppBar(
@@ -15,17 +17,18 @@ class WishList extends StatelessWidget {
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
-        children: pozycjeNaLiscieZyczen.map((pozycja) {
+        children: observedOffer.map((offer) {
           return GestureDetector(
             onTap: () {
-              _showOfferDetails(context, pozycja);
+              _showOfferDetails(context, offer);
             },
             child: _buildWishlistItem(
-              tytul: pozycja.tytul,
-              cena: "Cena: " + pozycja.cena,
-              okres:"Data: " + pozycja.okres,
-              lokalizacja: pozycja.lokalizacja,
-              zdjecieUrl: pozycja.zdjecieUrl,
+              title: offer.title,
+              price: "Cena: " + offer.price,
+              dates: "Data: " + offer.dates,
+              location: offer.location,
+              photoUrl: offer.photoUrl,
+              offer: offer,
             ),
           );
         }).toList(),
@@ -34,11 +37,12 @@ class WishList extends StatelessWidget {
   }
 
   Widget _buildWishlistItem({
-    required String tytul,
-    required String cena,
-    required String okres,
-    required String lokalizacja,
-    required String zdjecieUrl,
+    required String title,
+    required String price,
+    required String dates,
+    required String location,
+    required String photoUrl,
+    required Offer offer,
   }) {
     return Card(
       child: Padding(
@@ -52,7 +56,7 @@ class WishList extends StatelessWidget {
               height: 80.0,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(zdjecieUrl),
+                  image: AssetImage(photoUrl),
                   fit: BoxFit.cover,
                 ),
                 borderRadius: BorderRadius.circular(8.0),
@@ -65,16 +69,16 @@ class WishList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    tytul,
+                    title,
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18.0,
                     ),
                   ),
                   const SizedBox(height: 8.0),
-                  Text(cena),
-                  Text(okres),
-                  Text(lokalizacja),
+                  Text(price),
+                  Text(dates),
+                  Text(location),
                 ],
               ),
             ),
@@ -84,19 +88,19 @@ class WishList extends StatelessWidget {
     );
   }
 
-  void _showOfferDetails(BuildContext context, PozycjaNaLiscieZyczen pozycja) {
+  void _showOfferDetails(BuildContext context, Offer offer) {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => OfferDetailsScreen(pozycja: pozycja),
+        builder: (context) => OfferDetailsScreen(offer: offer),
       ),
     );
   }
 }
 
 class OfferDetailsScreen extends StatelessWidget {
-  final PozycjaNaLiscieZyczen pozycja;
+  final Offer offer;
 
-  const OfferDetailsScreen({Key? key, required this.pozycja}) : super(key: key);
+  const OfferDetailsScreen({Key? key, required this.offer}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -105,13 +109,18 @@ class OfferDetailsScreen extends StatelessWidget {
         title: Text('Szczegóły oferty'),
       ),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Image.asset(
-            pozycja.zdjecieUrl,
-            width: double.infinity,
-            height: 200.0,
-            fit: BoxFit.cover,
+          Card(
+            elevation: 4.0, // Add a subtle shadow
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.asset(
+                offer.photoUrl,
+                height: 200.0,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -119,27 +128,60 @@ class OfferDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  pozycja.tytul,
+                  offer.title,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24.0,
                   ),
                 ),
                 SizedBox(height: 8.0),
-                Text('Cena: ${pozycja.cena}'),
-                Text('Okres: ${pozycja.okres}'),
-                Text('Lokalizacja: ${pozycja.lokalizacja}'),
+                Text(
+                  'Cena: ${offer.price}',
+                  style: TextStyle(
+                    color: appTheme.hintColor, // Use an accent color for emphasis
+                  ),
+                ),
+                Text('Data: ${offer.dates}'),
+                Text('Lokalizacja: ${offer.location}'),
+                Text('Opis: ${offer.location}'),
               ],
             ),
           ),
           Spacer(),
+          Container(
+            height: 200.0, // Wysokość obszaru mapy
+            child: GoogleMap(
+              onMapCreated: (controller) {
+                // Tutaj możesz dodać dodatkową logikę obsługi mapy
+              },
+              initialCameraPosition: CameraPosition(
+                target: LatLng(36.54978068411743, 29.1157510185125),
+                zoom: 14.0,
+              ),
+              markers: Set<Marker>.from([
+                Marker(
+                  markerId: MarkerId('offer_location'),
+                  position: LatLng(36.54978068411743, 29.1157510185125),
+                  infoWindow: InfoWindow(
+                    title: 'Lokalizacja oferty',
+                    snippet: offer.location,
+                  ),
+                ),
+              ]),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                // Dodaj tutaj obsługę przycisku Rezerwuj
-              },
-              child: Text('Rezerwuj'),
+            child:
+            ElevatedButton(
+              onPressed: (){},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: appTheme.secondaryHeaderColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+              ),
+              child: Text('Rezerwuj', style: TextStyle(fontSize:20, color: Colors.white)),
             ),
           ),
         ],

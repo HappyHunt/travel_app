@@ -5,12 +5,19 @@ import 'package:travel_app/nav/bottom_nav.dart';
 import 'package:travel_app/pages/login/login_or_sign_up.dart';
 
 import 'firebase_options.dart';
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  final GoogleMapsFlutterPlatform mapsImplementation =
+      GoogleMapsFlutterPlatform.instance;
+  if (mapsImplementation is GoogleMapsFlutterAndroid) {
+    mapsImplementation.useAndroidViewSurface = true;
+  }
   runApp(const MyApp());
 }
 
@@ -35,10 +42,14 @@ class MyApp extends StatelessWidget {
       title: 'VoyageVoyage',
       theme: appTheme,
       home: BottomNav(),
-      routes: {
-        "/login-or-signup": (context) => const LoginAndSignUp(),
-        "/nav": (context) => const BottomNav(),
-      }
+      // ChangeNotifierProvider(
+      //   create: (context) => AuthProvider(),
+      //   child:
+ //       BottomNav(),
+        routes: {
+          "/login-or-signup": (context) => const LoginAndSignUp(),
+          "/nav": (context) => const BottomNav(),
+        }
     );
   }
 }

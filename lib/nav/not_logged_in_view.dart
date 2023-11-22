@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:travel_app/pages/login/login_page.dart';
 
 import '../main.dart';
 
@@ -30,6 +29,7 @@ class NotLoggedInView extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16.0),
                   const Text(

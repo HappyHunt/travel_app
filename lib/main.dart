@@ -16,12 +16,14 @@ void main() async{
 }
 
 ThemeData appTheme = ThemeData(
-  primaryColor: const Color(0xFF3E4095), // Główny kolor aplikacji
+  primaryColor: const Color(0xFF3E4095), // Główny kolor aplikacji,
   hintColor: const Color(0xFF16275A), // Kolor akcentu
   secondaryHeaderColor: const Color(0xFF347555), // Kolor tła AppBar
   colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFF5F5F5)),
   scaffoldBackgroundColor: const Color(0xFFF5F5F5), // Kolor tła Scaffold
   shadowColor: Colors.grey, // Kolor cienia
+  dialogBackgroundColor: const Color(0xF06BCC9B),
+  indicatorColor: Colors.white,
   useMaterial3: true,
 );
 

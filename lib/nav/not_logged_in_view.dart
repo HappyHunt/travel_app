@@ -45,7 +45,7 @@ class NotLoggedInView extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 50),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                        borderRadius: BorderRadius.circular(30.0),
                       ),
                       backgroundColor: appTheme.hintColor,
                     ),

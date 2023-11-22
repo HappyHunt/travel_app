@@ -154,7 +154,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                   style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16.0), // wewnętrzny padding
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0), // zaokrąglenie narożników
+                    borderRadius: BorderRadius.circular(30.0), // zaokrąglenie narożników
                     ),
                     backgroundColor: appTheme.secondaryHeaderColor,
                   ),

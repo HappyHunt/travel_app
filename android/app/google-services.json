@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1035050854887",
+    "firebase_url": "https://voyagevoyage-app-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "voyagevoyage-app",
+    "storage_bucket": "voyagevoyage-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1035050854887:android:da64ad5161c84f4da0f542",
+        "android_client_info": {
+          "package_name": "com.example.travel_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1035050854887-7qsn3tb1e3destsau0kn8nojdurefamo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.travel_app",
+            "certificate_hash": "451a72fedafc25511c2583e7d0a27bed24755f92"
+          }
+        },
+        {
+          "client_id": "1035050854887-qqlo440pih7vvcp9l3jdkmet7uk7pv3o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQeMMlazPYqXA5EnW2oFEzXrtqNNXzpOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1035050854887-qqlo440pih7vvcp9l3jdkmet7uk7pv3o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

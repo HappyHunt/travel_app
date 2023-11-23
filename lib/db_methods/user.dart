@@ -3,15 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 final CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-Future<void> addUser(String uid, String? first, String? last, String? email, DateTime? born, String? phone) {
+Future<void> addUser(String uid, String? firstName, String? lastName, String? email, DateTime? birthDate, String? phoneNumber) {
   return users
       .doc(uid)
       .set({
-    'last': last,
-    'first': first,
+    'firstName': firstName,
+    'lastName': lastName,
     'email': email,
-    'born' : born,
-    'phone' : phone
+    'birthDate' : birthDate,
+    'phoneNumber' : phoneNumber
   })
       .then((value) => print("Użytkownik dodany do Firestore"))
       .catchError((error) => print("Błąd: $error"));
@@ -31,5 +31,34 @@ Future<bool> checkIfUserExists(User? user) async {
   } else {
     print("Użytkownik nie istnieje w bazie danych.");
     return false;
+  }
+}
+
+Future<Map<String, dynamic>?> getUserData(String? uid) async {
+  try {
+    DocumentSnapshot userSnapshot = await users.doc(uid).get();
+    if (userSnapshot.exists) {
+      return userSnapshot.data() as Map<String, dynamic>;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    print("Błąd pobierania danych użytkownika: $e");
+    return null;
+  }
+}
+
+Future<void> updateUserData(String? uid, String firstName, String lastName, String birthDate, String email, String phoneNumber) async {
+  try {
+    await users.doc(uid).update({
+      'firstName': firstName,
+      'lastName': lastName,
+      'birthDate': birthDate,
+      'email': email,
+      'phoneNumber': phoneNumber,
+    });
+    print('Dane użytkownika zaktualizowane pomyślnie.');
+  } catch (e) {
+    print('Błąd aktualizacji danych użytkownika: $e');
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../db_methods/trips.dart';
 import '../../main.dart';
 import 'home_page.dart';
 
@@ -19,9 +20,8 @@ class _AppBarHomeState extends State<AppBarHome> {
       length: categories.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Center(
-            child: Image.network('https://firebasestorage.googleapis.com/v0/b/voyagevoyage-app.appspot.com/o/logo.png?alt=media&token=18b15c1b-c3bd-4d88-a92f-9050e2a50026',
-                height: 120, width: double.infinity),
+          title: const Center(
+            child:Image(image: AssetImage('./assets/logo.png'))
           ),
           toolbarHeight: 120.0,
           scrolledUnderElevation: 20.0,
@@ -54,8 +54,9 @@ class _AppBarHomeState extends State<AppBarHome> {
                 ),
               );
             }).toList(),
-            onTap: (int index) {
+            onTap: (int index) async {
               Provider.of<MyState>(context, listen: false).hotelOrApartment = index;
+              Provider.of<MyState>(context, listen: false).travelsList = await getTravelsList(index);
             },
           ),
         ),

@@ -1,19 +1,44 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Offer {
-  final String title;
-  final String price;
-  final String dates;
-  final String location;
-  final String photoUrl;
-  final String description;
-  final bool isTour;
+  late String uid;
+  late String title;
+  late double? price;
+  late DateTime? endDate;
+  late DateTime? startDate;
+  late String country;
+  late String city;
+  late double? longitude;
+  late double? latitude;
+  late String photoUrl;
+  late String description;
 
   Offer({
     required this.title,
     required this.price,
-    required this.dates,
-    required this.location,
+    required this.endDate,
+    required this.startDate,
+    required this.country,
+    required this.city,
+    required this.longitude,
+    required this.latitude,
     required this.photoUrl,
     required this.description,
-    required this.isTour,
   });
+
+  factory Offer.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return Offer(
+      title: data['title'] ?? '',
+      price: (data['price'] as num?)?.toDouble() ?? 0,
+      endDate: (data['endDate'] as Timestamp).toDate(),
+      startDate: (data['startDate'] as Timestamp).toDate(),
+      country: data['country'] ?? '',
+      city: data['city'] ?? '',
+      longitude: (data['longitude'] as num?)?.toDouble() ?? 0,
+      latitude: (data['latitude'] as num?)?.toDouble() ?? 0,
+      photoUrl: data['photoUrl'] ?? '',
+      description: data['description'] ?? '',
+    )..uid = doc.id;
+  }
 }

@@ -4,22 +4,30 @@ class OfferProvider {
   static List<Offer> readOffersData() {
     return [
       Offer(
-        title: 'Malediwy ',
-        price: '3999 zł',
-        dates: '19.04.2023 - 29.04.2023',
-        location: 'Chaka laka, Malediwy',
+        title: 'Malediwy',
+        price: 3999.0,
+        endDate: DateTime(2023, 4, 29),
         photoUrl: 'assets/m1.jpg',
         description: 'sraka',
-        isTour: false,
+        startDate: null,
+        country: '',
+        city: '',
+        longitude: null,
+        latitude: null,
       ),
       Offer(
         title: 'Inna oferta',
-        price: '2999 zł',
-        dates: '15.05.2023 - 25.05.2023',
-        location: 'Inna location',
+        price: 2999.0,
+        // Zmieniłem na double
+        endDate: DateTime(2023, 5, 25),
+        // Zmieniłem na DateTime
         photoUrl: 'assets/m2.jpg',
         description: 'sraka',
-        isTour: false,
+        startDate: null,
+        country: '',
+        city: '',
+        longitude: null,
+        latitude: null,
       ),
     ];
   }

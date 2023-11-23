@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_app/nav/bottom_nav.dart';
 import 'package:travel_app/pages/login/login_or_sign_up.dart';
+import 'package:travel_app/pages/offers/offers_data.dart';
 import 'firebase_options.dart';
 
 void main() async{
@@ -47,11 +48,19 @@ class MyApp extends StatelessWidget {
 
 class MyState extends ChangeNotifier {
   int _hotelOrApartment = 0;
+  late List<Offer> _travelsList = [];
 
   int get hotelOrApartment => _hotelOrApartment;
 
+  List<Offer> get travelsList => _travelsList;
+
   set hotelOrApartment(int value) {
     _hotelOrApartment = value;
+    notifyListeners();
+  }
+
+  set travelsList(List<Offer> value) {
+    _travelsList = value;
     notifyListeners();
   }
 }

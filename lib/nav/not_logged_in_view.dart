@@ -9,11 +9,12 @@ class NotLoggedInView extends StatelessWidget {
       extendBody: true,
       body: SafeArea(
         child: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [appTheme.secondaryHeaderColor, appTheme.scaffoldBackgroundColor],
+              colors: [Color(0xFF093D1A),
+                Color(0xF0BBFAD8)],
             ),
           ),
           child: Center(
@@ -22,8 +23,10 @@ class NotLoggedInView extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Image(image: AssetImage('./assets/logo.png')),
+                  const SizedBox(height: 30.0),
                   const Text(
-                    'Witaj w aplikacji VoyageVoyage!',
+                    'Witaj w aplikacji!',
                     style: TextStyle(
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,
@@ -47,13 +50,14 @@ class NotLoggedInView extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30.0),
                       ),
-                      backgroundColor: appTheme.hintColor,
+                      backgroundColor: appTheme.scaffoldBackgroundColor,
                     ),
-                    child: Text(
-                      'Zaloguj się',
+                    child: const Text(
+                      'Zaloguj / Zarejestruj',
                       style: TextStyle(
                         fontSize: 18.0,
-                        color: appTheme.scaffoldBackgroundColor,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold
                       ),
                     ),
                   ),

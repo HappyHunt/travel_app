@@ -13,10 +13,7 @@ class WishList extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Lista obserwowanych ofert',
-          style: TextStyle(fontSize: 24.0),
-        ),
+        title: Text('Lista obserwowanych ofert'),
       ),
       body: ListView(
         padding: EdgeInsets.all(16.0),
@@ -27,9 +24,9 @@ class WishList extends StatelessWidget {
             },
             child: _buildWishlistItem(
               title: offer.title,
-              price: "Cena: " + offer.price,
-              dates: "Data: " + offer.dates,
-              location: offer.location,
+              price: "Cena: " + offer.price.toString(),
+              dates: "Data: " + offer.endDate.toString(),
+              location: offer.latitude.toString(),
               photoUrl: offer.photoUrl,
               offer: offer,
             ),
@@ -49,20 +46,20 @@ class WishList extends StatelessWidget {
   }) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             // Obraz
             Container(
-              width: 120.0,
-              height: 120.0,
+              width: 80.0,
+              height: 80.0,
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage(photoUrl),
                   fit: BoxFit.cover,
                 ),
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(8.0),
               ),
             ),
             const SizedBox(width: 16.0),
@@ -73,24 +70,15 @@ class WishList extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     title,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 20.0,
+                      fontSize: 18.0,
                     ),
                   ),
-                  const SizedBox(height: 12.0),
-                  Text(
-                    price,
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Text(
-                    dates,
-                    style: TextStyle(fontSize: 16.0),
-                  ),
-                  Text(
-                    location,
-                    style: TextStyle(fontSize: 16.0),
-                  ),
+                  const SizedBox(height: 8.0),
+                  Text(price),
+                  Text(dates),
+                  Text(location),
                 ],
               ),
             ),
@@ -118,129 +106,85 @@ class OfferDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Szczegóły oferty',
-          style: TextStyle(fontSize: 24.0),
-        ),
+        title: Text('Szczegóły oferty'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Card(
-              elevation: 4.0, // Add a subtle shadow
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12.0),
-                child: Image.asset(
-                  offer.photoUrl,
-                  height: 200.0,
-                  fit: BoxFit.cover,
-                ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Card(
+            elevation: 4.0, // Add a subtle shadow
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image.asset(
+                offer.photoUrl,
+                height: 200.0,
+                fit: BoxFit.cover,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    offer.title,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 28.0,
-                    ),
-                  ),
-                  SizedBox(height: 16.0),
-                  Text(
-                    'Cena:',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      color: appTheme.hintColor,
-                    ),
-                  ),
-                  Text(
-                    offer.price,
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                  SizedBox(height: 16.0),
-                  Text(
-                    'Data:',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      color: appTheme.hintColor,
-                    ),
-                  ),
-                  Text(
-                    offer.dates,
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                  SizedBox(height: 16.0),
-                  Text(
-                    'Lokalizacja:',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      color: appTheme.hintColor,
-                    ),
-                  ),
-                  Text(
-                    offer.location,
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                  SizedBox(height: 16.0),
-                  Text(
-                    'Opis:',
-                    style: TextStyle(
-                      fontSize: 20.0,
-                      color: appTheme.hintColor,
-                    ),
-                  ),
-                  Text(
-                    offer.description,
-                    style: TextStyle(fontSize: 18.0),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              height: 180.0, // Wysokość obszaru mapy
-              child: GoogleMap(
-                onMapCreated: (controller) {
-                  // Tutaj możesz dodać dodatkową logikę obsługi mapy
-                },
-                initialCameraPosition: CameraPosition(
-                  target: LatLng(36.54978068411743, 29.1157510185125),
-                  zoom: 12.0,
-                ),
-                markers: Set<Marker>.from([
-                  Marker(
-                    markerId: MarkerId('offer_location'),
-                    position: LatLng(36.54978068411743, 29.1157510185125),
-                    infoWindow: InfoWindow(
-                      title: 'Lokalizacja oferty',
-                      snippet: offer.location,
-                    ),
-                  ),
-                ]),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: appTheme.secondaryHeaderColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  offer.title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 24.0,
                   ),
                 ),
-                child: Text(
-                  'Rezerwuj',
-                  style: TextStyle(fontSize: 24, color: Colors.white),
+                SizedBox(height: 8.0),
+                Text(
+                  'Cena: ${offer.price}',
+                  style: TextStyle(
+                    color: appTheme.hintColor, // Use an accent color for emphasis
+                  ),
+                ),
+                Text('Data: ${offer.endDate}'),
+                Text('Lokalizacja: ${offer.city}'),
+                Text('Opis: ${offer.description}'),
+              ],
+            ),
+          ),
+          Spacer(),
+          Container(
+            height: 200.0, // Wysokość obszaru mapy
+            child: GoogleMap(
+              onMapCreated: (controller) {
+                // Tutaj możesz dodać dodatkową logikę obsługi mapy
+              },
+              initialCameraPosition: CameraPosition(
+                target: LatLng(36.54978068411743, 29.1157510185125),
+                zoom: 14.0,
+              ),
+              markers: Set<Marker>.from([
+                Marker(
+                  markerId: MarkerId('offer_location'),
+                  position: LatLng(36.54978068411743, 29.1157510185125),
+                  infoWindow: InfoWindow(
+                    title: 'Lokalizacja oferty',
+                    snippet: offer.country,
+                  ),
+                ),
+              ]),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child:
+            ElevatedButton(
+              onPressed: (){},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: appTheme.secondaryHeaderColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
+              child: Text('Rezerwuj', style: TextStyle(fontSize:20, color: Colors.white)),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

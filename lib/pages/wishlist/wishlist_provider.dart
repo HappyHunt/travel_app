@@ -1,21 +1,23 @@
 import 'package:travel_app/pages/wishlist/wishlist_data.dart';
 
 class WishlistProvider {
-  static List<PozycjaNaLiscieZyczen> pobierzDane() {
+  static List<OfferListItem> getData() {
     return [
-      PozycjaNaLiscieZyczen(
-        tytul: 'Malediwy ',
-        cena: '3999 zł',
-        okres: '19.04.2023 - 29.04.2023',
-        lokalizacja: 'Chaka laka, Malediwy',
-        zdjecieUrl: 'assets/m1.jpg',
+      OfferListItem(
+        title: 'Malediwy ',
+        price: '3999 zł',
+        startDate: '19.04.2023',
+        endDate: '29.04.2023',
+        localization: 'Chaka laka, Malediwy',
+        photoUrl: 'assets/m1.jpg',
       ),
-      PozycjaNaLiscieZyczen(
-        tytul: 'Inna oferta',
-        cena: '2999 zł',
-        okres: '15.05.2023 - 25.05.2023',
-        lokalizacja: 'Inna lokalizacja',
-        zdjecieUrl: 'assets/m2.jpg',
+      OfferListItem(
+        title: 'Inna oferta',
+        price: '2999 zł',
+        startDate: '15.05.2023',
+        endDate: '25.05.2023',
+        localization: 'Inna lokalizacja',
+        photoUrl: 'assets/m2.jpg',
       ),
     ];
   }

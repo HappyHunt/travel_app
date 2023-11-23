@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:travel_app/db_methods/user.dart';
 
 import '../../main.dart';
 import 'google-sign-in-button.dart';
@@ -26,12 +27,15 @@ class _SignUpState extends State<SignUp> {
       setState(() {
         isLoading = true;
       });
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      UserCredential userCredental = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _usernameController.text, password: _passwordController.text);
       setState(() {
         isLoading = false;
       });
       Navigator.of(context).pop();
+
+      addUser(userCredental.user!.uid, null, null, _usernameController.text, null, null);
+
     } on FirebaseAuthException catch (e) {
       setState(() {
         isLoading = false;

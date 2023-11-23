@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'package:travel_app/nav/bottom_nav.dart';
 import 'package:travel_app/pages/login/login_or_sign_up.dart';
 import 'firebase_options.dart';
@@ -10,7 +11,10 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp( ChangeNotifierProvider(
+    create: (context) => MyState(),
+    child: const MyApp(),
+  ),);
 }
 
 ThemeData appTheme = ThemeData(
@@ -36,16 +40,18 @@ class MyApp extends StatelessWidget {
       home: BottomNav(),
       routes: {
         "/login-or-signup": (context) => const LoginAndSignUp(),
-        "/nav": (context) => const BottomNav(),
       }
     );
   }
 }
 
-// class HotelOrApartmentState {
-//   static int hotelOrApartment = 0;
-//
-//   static void setHotelOrApartment(int newValue) {
-//     hotelOrApartment = newValue;
-//   }
-// }
+class MyState extends ChangeNotifier {
+  int _hotelOrApartment = 0;
+
+  int get hotelOrApartment => _hotelOrApartment;
+
+  set hotelOrApartment(int value) {
+    _hotelOrApartment = value;
+    notifyListeners();
+  }
+}

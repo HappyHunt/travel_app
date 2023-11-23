@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../../db_methods/user.dart';
 import '../../main.dart';
 
 class GoogleSignInButton extends StatefulWidget {
@@ -26,7 +27,11 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
       setState(() {
         _isSigningIn = true;
       });
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+      bool exists = await checkIfUserExists(userCredential.user);
+      if (!exists){
+        addUser(userCredential.user!.uid, null, null, userCredential.user!.email, null, null);
+      }
       setState(() {
         _isSigningIn = false;
       });

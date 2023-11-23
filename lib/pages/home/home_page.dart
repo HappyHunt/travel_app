@@ -1,12 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 import '../../main.dart';
 import 'app_bar.dart';
 import 'calendar_marked.dart';
 
 TextEditingController dateValueController = TextEditingController();
-var hotelOrApartment = 0;
+var db = FirebaseFirestore.instance;
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -49,6 +51,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int hotelOrApartment = Provider.of<MyState>(context).hotelOrApartment;
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: SingleChildScrollView(
@@ -86,37 +89,43 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            SizedBox(
-              height: 70.0,
-              child: InputDecorator(
-                decoration: InputDecoration(
-                  hintText: 'Miejscowość',
-                  prefixIcon: const Icon(Icons.location_on),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    hint: const Text('Miejscowość'),
-                    value: selectedLocation,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedLocation = newValue;
-                      });
-                    },
-                    items:
-                        locationsData[selectedCountry]?.map((String location) {
-                      return DropdownMenuItem<String>(
-                        value: location,
-                        child: Text(location),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
+            hotelOrApartment == 0
+                ? Column(
+                    children: [
+                      SizedBox(
+                        height: 70.0,
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            hintText: 'Miejscowość',
+                            prefixIcon: const Icon(Icons.location_on),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              hint: const Text('Miejscowość'),
+                              value: selectedLocation,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  selectedLocation = newValue;
+                                });
+                              },
+                              items: locationsData[selectedCountry]
+                                  ?.map((String location) {
+                                return DropdownMenuItem<String>(
+                                  value: location,
+                                  child: Text(location),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  )
+                : const SizedBox(height: 0),
             TextField(
               decoration: InputDecoration(
                 hintText: 'Liczba osób',
@@ -149,19 +158,29 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                 width: double.infinity, // przycisk na całą szerokość
                 child: ElevatedButton(
                   onPressed: () {
-                  // Tutaj dodaj kod do obsługi przycisku wyszukiwania
-                    },
+                    final user = <String, dynamic>{
+                      "first": "Ada",
+                      "last": "Lovelace",
+                      "born": 12
+                    };
+
+                    db.collection("users").add(user).then((DocumentReference doc) =>
+                        print('DocumentSnapshot added with ID: ${doc.id}'));
+                  },
                   style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0), // wewnętrzny padding
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0), // zaokrąglenie narożników
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    // wewnętrzny padding
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          30.0), // zaokrąglenie narożników
                     ),
                     backgroundColor: appTheme.secondaryHeaderColor,
                   ),
-                  child: const Text('Wyszukaj',
+                  child: const Text(
+                    'Wyszukaj',
                     style: TextStyle(
-                    fontSize: 18.0, // rozmiar czcionki
-                    color: Colors.white,
+                      fontSize: 18.0, // rozmiar czcionki
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -189,7 +208,22 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('Wybierz'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 10.0, horizontal: 50.0), // wewnętrzny padding
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(30.0), // zaokrąglenie narożników
+                  ),
+                  backgroundColor: appTheme.secondaryHeaderColor,
+                ),
+                child: const Text(
+                  'Wybierz',
+                  style: TextStyle(
+                    fontSize: 16.0, // rozmiar czcionki
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ],
@@ -198,5 +232,3 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
     );
   }
 }
-
-

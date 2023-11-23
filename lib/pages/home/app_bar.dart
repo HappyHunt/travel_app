@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../main.dart';
 import 'home_page.dart';
@@ -54,10 +55,7 @@ class _AppBarHomeState extends State<AppBarHome> {
               );
             }).toList(),
             onTap: (int index) {
-              setState(() {
-                hotelOrApartment = index;
-
-              });
+              Provider.of<MyState>(context, listen: false).hotelOrApartment = index;
             },
           ),
         ),

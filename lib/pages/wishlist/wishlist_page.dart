@@ -7,7 +7,7 @@ class WishList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<PozycjaNaLiscieZyczen> pozycjeNaLiscieZyczen = WishlistProvider.pobierzDane();
+    List<OfferListItem> pozycjeNaLiscieZyczen = WishlistProvider.getData();
 
     return Scaffold(
       appBar: AppBar(
@@ -21,11 +21,11 @@ class WishList extends StatelessWidget {
               _showOfferDetails(context, pozycja);
             },
             child: _buildWishlistItem(
-              tytul: pozycja.tytul,
-              cena: "Cena: " + pozycja.cena,
-              okres:"Data: " + pozycja.okres,
-              lokalizacja: pozycja.lokalizacja,
-              zdjecieUrl: pozycja.zdjecieUrl,
+              tytul: pozycja.title,
+              cena: "Cena: " + pozycja.price,
+              okres:"Data: " + pozycja.endDate,
+              lokalizacja: pozycja.localization,
+              zdjecieUrl: pozycja.photoUrl,
             ),
           );
         }).toList(),
@@ -84,7 +84,7 @@ class WishList extends StatelessWidget {
     );
   }
 
-  void _showOfferDetails(BuildContext context, PozycjaNaLiscieZyczen pozycja) {
+  void _showOfferDetails(BuildContext context, OfferListItem pozycja) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => OfferDetailsScreen(pozycja: pozycja),
@@ -94,7 +94,7 @@ class WishList extends StatelessWidget {
 }
 
 class OfferDetailsScreen extends StatelessWidget {
-  final PozycjaNaLiscieZyczen pozycja;
+  final OfferListItem pozycja;
 
   const OfferDetailsScreen({Key? key, required this.pozycja}) : super(key: key);
 
@@ -108,7 +108,7 @@ class OfferDetailsScreen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Image.asset(
-            pozycja.zdjecieUrl,
+            pozycja.photoUrl,
             width: double.infinity,
             height: 200.0,
             fit: BoxFit.cover,
@@ -119,16 +119,16 @@ class OfferDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  pozycja.tytul,
+                  pozycja.title,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 24.0,
                   ),
                 ),
                 SizedBox(height: 8.0),
-                Text('Cena: ${pozycja.cena}'),
-                Text('Okres: ${pozycja.okres}'),
-                Text('Lokalizacja: ${pozycja.lokalizacja}'),
+                Text('Cena: ${pozycja.price}'),
+                Text('Okres: ${pozycja.endDate}'),
+                Text('Lokalizacja: ${pozycja.localization}'),
               ],
             ),
           ),

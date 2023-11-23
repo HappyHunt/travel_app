@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:travel_app/main.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({super.key});
+  const Profile({Key? key}) : super(key: key);
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -97,80 +97,84 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mój profil', style: TextStyle(color: Colors.white)),
+        title: Text('Cześć $name, oto Twój profil', style: TextStyle(color: Colors.white)),
         backgroundColor: appTheme.secondaryHeaderColor,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const CircleAvatar(
-              radius: 50,
-              backgroundImage: AssetImage(
-                  'assets/profil.jpg'),
+      body: Container(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [appTheme.secondaryHeaderColor, appTheme.scaffoldBackgroundColor],
             ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(16.0),
+            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 30),
+              Expanded(
+                child: Card(
+                  margin: const EdgeInsets.all(30.0),
+                  color: Colors.white.withOpacity(0.9),
+                  child: ListView(
+                    padding: const EdgeInsets.all(16.0),
+                    children: [
+                      ListTile(
+                        title: Text('Imię', style: TextStyle(fontSize: 13.0)),
+                        subtitle: Text(name, style: TextStyle(fontSize: 18.0)),
+                      ),
+                      ListTile(
+                        title: Text('Nazwisko', style: TextStyle(fontSize: 13.0)),
+                        subtitle: Text(lastName, style: TextStyle(fontSize: 18.0)),
+                      ),
+                      ListTile(
+                        title: Text('Data urodzenia', style: TextStyle(fontSize: 13.0)),
+                        subtitle: Text(birthDate, style: TextStyle(fontSize: 18.0)),
+                      ),
+                      ListTile(
+                        title: Text('E-mail', style: TextStyle(fontSize: 13.0)),
+                        subtitle: Text(email, style: TextStyle(fontSize: 18.0)),
+                      ),
+                      ListTile(
+                        title: Text('Numer telefonu', style: TextStyle(fontSize: 13.0)),
+                        subtitle: Text(phoneNumber, style: TextStyle(fontSize: 18.0)),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ListTile(
-                    title: Text('Imię'),
-                    subtitle: Text(name),
-                    dense: true,
+                  ElevatedButton(
+                    onPressed: _openEditProfileDialog,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: appTheme.secondaryHeaderColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                    child: Text('Edytuj dane', style: TextStyle(color: Colors.white)),
                   ),
-                  ListTile(
-                    title: Text('Nazwisko'),
-                    subtitle: Text(lastName),
-                    dense: true,
-                  ),
-                  ListTile(
-                    title: Text('Data urodzenia'),
-                    subtitle: Text(birthDate),
-                    dense: true,
-                  ),
-                  ListTile(
-                    title: Text('E-mail'),
-                    subtitle: Text(email),
-                    dense: true,
-                  ),
-                  ListTile(
-                    title: Text('Numer telefonu'),
-                    subtitle: Text(phoneNumber),
-                    dense: true,
+                  ElevatedButton(
+                    onPressed: () async {
+                      await FirebaseAuth.instance.signOut();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: appTheme.secondaryHeaderColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
+                    ),
+                    child: Text('Wyloguj', style: TextStyle(color: Colors.white)),
                   ),
                 ],
               ),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: _openEditProfileDialog,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: appTheme.secondaryHeaderColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                  child: Text('Edytuj dane', style: TextStyle(color: Colors.white)),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    await FirebaseAuth.instance.signOut();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: appTheme.secondaryHeaderColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                  child: Text('Wyloguj', style: TextStyle(color: Colors.white)),
-                ),
-              ],
-            ),
-          ],
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );

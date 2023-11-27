@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,7 +8,9 @@ import 'package:travel_app/db_methods/trips.dart';
 import 'package:travel_app/pages/home/travel-list.dart';
 import 'package:travel_app/pages/offers/offers_data.dart';
 
+import '../../db_methods/countries_and_cities.dart';
 import '../../main.dart';
+import '../../models/model_countries.dart';
 import 'app_bar.dart';
 import 'calendar_marked.dart';
 
@@ -34,17 +38,19 @@ class HomeSearchScreen extends StatefulWidget {
 class _HomeSearchScreenState extends State<HomeSearchScreen> {
   String? selectedCountry;
   String? selectedLocation;
+  Map<String, List<String>> countriesMap = {};
 
-  Map<String, List<String>> locationsData = {
-    'Francja': ['Nicea', 'Cannes'],
-    'Meksyk': ['Meksyk City', 'Playa del Carmen'],
-    'Polska': ['Władysławowo', 'Rokietniki górne'],
-  };
+  // List<Country> countries = [
+  //   Country(name: 'Francja', cities: ['Nicea', 'Cannes']),
+  //   Country(name: 'Meksyk', cities: ['Meksyk City', 'Playa del Carmen']),
+  //   Country(name: 'Polska', cities: ['Władysławowo', 'Rokietniki górne']),
+  // ];
 
   @override
   void initState() {
     super.initState();
     Provider.of<MyState>(context, listen: false).setTravelsList(0);
+    setCountries();
   }
 
   @override
@@ -126,6 +132,9 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
   }
 
   Widget _buildContent(BuildContext context, int hotelOrApartment) {
+    final CollectionReference countriesCollection =
+    FirebaseFirestore.instance.collection('trips');
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Column(
@@ -151,7 +160,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                       selectedLocation = null;
                     });
                   },
-                  items: locationsData.keys.map((String country) {
+                  items: countriesMap.keys.map((String country) {
                     return DropdownMenuItem<String>(
                       value: country,
                       child: Text(country),
@@ -184,7 +193,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                                 selectedLocation = newValue;
                               });
                             },
-                            items: locationsData[selectedCountry]
+                            items: countriesMap[selectedCountry]
                                 ?.map((String location) {
                               return DropdownMenuItem<String>(
                                 value: location,
@@ -230,7 +239,19 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
             child: SizedBox(
               width: double.infinity, // przycisk na całą szerokość
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+
+                  // String jsonString = await DefaultAssetBundle.of(context)
+                  //     .loadString('assets/trips.json');
+                  // dynamic jsonData = jsonDecode(jsonString);
+                  //
+                  //
+                  // for (var countryData in jsonData) {
+                  //   print(countryData);
+                  //   await countriesCollection.add(countryData);
+                  // }
+
+                },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   // wewnętrzny padding
@@ -252,5 +273,13 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> setCountries() async {
+    var countriesData = await getCountryList();
+
+    for (var country in countriesData) {
+      countriesMap[country.name] = country.cities;
+    }
   }
 }

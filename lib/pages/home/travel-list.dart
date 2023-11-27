@@ -10,6 +10,7 @@ class TravelsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //TODO: dodać wygląd i przejście do oferty na klik
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),

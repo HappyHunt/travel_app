@@ -56,7 +56,7 @@ class _AppBarHomeState extends State<AppBarHome> {
             }).toList(),
             onTap: (int index) async {
               Provider.of<MyState>(context, listen: false).hotelOrApartment = index;
-              Provider.of<MyState>(context, listen: false).travelsList = await getTravelsList(index);
+              Provider.of<MyState>(context, listen: false).setTravelsList(index);
             },
           ),
         ),

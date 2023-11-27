@@ -76,9 +76,8 @@ class _LoginPageState extends State<LoginPage> {
                       OverflowBar(
                         overflowSpacing: 20,
                         children: [
-                          Center(
-                            child: Image.network('https://firebasestorage.googleapis.com/v0/b/voyagevoyage-app.appspot.com/o/logo.png?alt=media&token=18b15c1b-c3bd-4d88-a92f-9050e2a50026',
-                                height: 120, width: double.infinity),
+                          const Center(
+                            child: Image(image: AssetImage('./assets/logo.png'))
                           ),
                           TextFormField(
                             controller: _usernameController,

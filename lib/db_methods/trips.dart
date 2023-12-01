@@ -1,31 +1,63 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:travel_app/pages/offers/offers_data.dart';
 
-Future<List<Offer>> getTravelsList(int option) async {
+List<Offer> travelsList = [];
 
+Future<List<Offer>> getTravelsList(
+    int option, country, city, personCount, startDate, endDate) async {
   try {
-    QuerySnapshot querySnapshot;
+    var collectionReference = FirebaseFirestore.instance.collection('trips');
+    Query query = collectionReference;
 
     if (option == 1) {
-      print("objazd");
-      querySnapshot = await FirebaseFirestore.instance
-          .collection('trips')
-          .where('city', isEqualTo: "")
-          .get();
-      print(querySnapshot.docs);
+      query = query.where('city', isEqualTo: "");
     } else {
-      print("wypoczynek");
-      querySnapshot = await FirebaseFirestore.instance
-          .collection('trips')
-          .where('city', isNotEqualTo: "")
-          .get();
-      print(querySnapshot.docs);
+      query = query.where('city', isNotEqualTo: "");
+      if (city != null) {
+        query = query.where('city', isEqualTo: city);
+      }
+    }
+    if (country != null) {
+      query = query.where('country', isEqualTo: country);
     }
 
-    List<Offer> travelsList = querySnapshot.docs.map((doc) => Offer.fromFirestore(doc)).toList();
+    QuerySnapshot querySnapshot = await query.get();
+
+    travelsList =
+        querySnapshot.docs.map((doc) => Offer.fromFirestore(doc)).toList();
+
     travelsList.forEach((offer) {
-      print("Title: ${offer.title}, Price: ${offer.price}, Location: ${offer.city}");
+      print(
+          "Title: ${offer.title}, Price: ${offer.price}, Location: ${offer.city}, Start: ${offer.startDate}, End: ${offer.endDate}");
     });
+    print("Start: ${startDate}, End: ${endDate}");
+
+    travelsList = travelsList.where((offer) {
+      bool meetsPersonCountCondition = personCount != null
+          ? (offer.personCount != null &&
+              offer.personCount! >= int.parse(personCount))
+          : true;
+      bool meetsStartDateCondition = startDate != null
+          ? (offer.startDate != null &&
+              offer.startDate!.millisecondsSinceEpoch ~/ 1000 ==
+                  startDate.millisecondsSinceEpoch ~/ 1000)
+          : true;
+      bool meetsEndDateCondition = endDate != null
+          ? (offer.endDate != null &&
+              offer.endDate!.millisecondsSinceEpoch ~/ 1000 ==
+                  endDate.millisecondsSinceEpoch ~/ 1000)
+          : true;
+
+      return meetsPersonCountCondition &&
+          meetsStartDateCondition &&
+          meetsEndDateCondition;
+    }).toList();
+
+    travelsList.forEach((offer) {
+      print(
+          "Title: ${offer.title}, Price: ${offer.price}, Location: ${offer.city}");
+    });
+
     return travelsList;
   } catch (error) {
     print("Błąd podczas pobierania danych z Firestore: $error");

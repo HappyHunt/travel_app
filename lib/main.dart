@@ -70,10 +70,10 @@ class MyState extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> setTravelsList(int value) async {
+  Future<void> setTravelsList(int value, country, city, personCount, startDate, endDate) async {
     try {
       _isLoading = true;
-      var responseData = await getTravelsList(value);
+      var responseData = await getTravelsList(value, country, city, personCount, startDate, endDate);
 
       _travelsList = responseData;
       notifyListeners();

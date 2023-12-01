@@ -66,6 +66,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     dateValueController.text =
     "${_rangeStartDate.day}.${_rangeStartDate.month}.${_rangeStartDate.year}  -"
         "  ${_rangeEndDate.day}.${_rangeEndDate.month}.${_rangeEndDate.year}";
+    selectedStartDate = _rangeStartDate;
+    selectedEndDate = _rangeEndDate;
   }
 
   EventList<Event> _generateMarkedDates() {

@@ -17,6 +17,12 @@ import 'calendar_marked.dart';
 TextEditingController dateValueController = TextEditingController();
 var db = FirebaseFirestore.instance;
 
+String? selectedCountry;
+String? selectedLocation;
+DateTime? selectedStartDate;
+DateTime? selectedEndDate;
+var selectedPersonCount;
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -36,20 +42,13 @@ class HomeSearchScreen extends StatefulWidget {
 }
 
 class _HomeSearchScreenState extends State<HomeSearchScreen> {
-  String? selectedCountry;
-  String? selectedLocation;
   Map<String, List<String>> countriesMap = {};
-
-  // List<Country> countries = [
-  //   Country(name: 'Francja', cities: ['Nicea', 'Cannes']),
-  //   Country(name: 'Meksyk', cities: ['Meksyk City', 'Playa del Carmen']),
-  //   Country(name: 'Polska', cities: ['Władysławowo', 'Rokietniki górne']),
-  // ];
 
   @override
   void initState() {
     super.initState();
-    Provider.of<MyState>(context, listen: false).setTravelsList(0);
+    Provider.of<MyState>(context, listen: false)
+        .setTravelsList(0, null, null, null, null, null);
     setCountries();
   }
 
@@ -85,7 +84,10 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
           ),
-          child: const Icon(Icons.keyboard_arrow_up,color: Colors.black,),
+          child: const Icon(
+            Icons.keyboard_arrow_up,
+            color: Colors.black,
+          ),
         ),
       ),
     ]);
@@ -133,7 +135,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
 
   Widget _buildContent(BuildContext context, int hotelOrApartment) {
     final CollectionReference countriesCollection =
-    FirebaseFirestore.instance.collection('trips');
+        FirebaseFirestore.instance.collection('trips');
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -216,6 +218,11 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
+            onChanged: (var newValue) {
+              setState(() {
+                selectedPersonCount = newValue;
+              });
+            },
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           ),
@@ -240,7 +247,6 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
               width: double.infinity, // przycisk na całą szerokość
               child: ElevatedButton(
                 onPressed: () async {
-
                   // String jsonString = await DefaultAssetBundle.of(context)
                   //     .loadString('assets/trips.json');
                   // dynamic jsonData = jsonDecode(jsonString);
@@ -250,7 +256,16 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                   //   print(countryData);
                   //   await countriesCollection.add(countryData);
                   // }
-
+                  print(
+                      "Wyszukaj:  ${selectedCountry} , ${selectedLocation} , ${selectedStartDate} , ${selectedEndDate} , ${selectedPersonCount}");
+                  Provider.of<MyState>(context, listen: false).setTravelsList(
+                      hotelOrApartment,
+                      selectedCountry,
+                      selectedLocation,
+                      selectedPersonCount,
+                      selectedStartDate,
+                      selectedEndDate);
+                  setCountries();
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),

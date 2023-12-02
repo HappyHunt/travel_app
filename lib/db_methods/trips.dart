@@ -39,13 +39,13 @@ Future<List<Offer>> getTravelsList(
           : true;
       bool meetsStartDateCondition = startDate != null
           ? (offer.startDate != null &&
-              offer.startDate!.millisecondsSinceEpoch ~/ 1000 ==
-                  startDate.millisecondsSinceEpoch ~/ 1000)
+              (offer.startDate!.isAfter(startDate) ||
+                  offer.startDate!.isAtSameMomentAs(startDate)))
           : true;
       bool meetsEndDateCondition = endDate != null
           ? (offer.endDate != null &&
-              offer.endDate!.millisecondsSinceEpoch ~/ 1000 ==
-                  endDate.millisecondsSinceEpoch ~/ 1000)
+              (offer.endDate!.isBefore(endDate) ||
+                  offer.endDate!.isAtSameMomentAs(endDate)))
           : true;
 
       return meetsPersonCountCondition &&

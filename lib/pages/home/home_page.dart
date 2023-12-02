@@ -247,15 +247,6 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
               width: double.infinity, // przycisk na całą szerokość
               child: ElevatedButton(
                 onPressed: () async {
-                  // String jsonString = await DefaultAssetBundle.of(context)
-                  //     .loadString('assets/trips.json');
-                  // dynamic jsonData = jsonDecode(jsonString);
-                  //
-                  //
-                  // for (var countryData in jsonData) {
-                  //   print(countryData);
-                  //   await countriesCollection.add(countryData);
-                  // }
                   print(
                       "Wyszukaj:  ${selectedCountry} , ${selectedLocation} , ${selectedStartDate} , ${selectedEndDate} , ${selectedPersonCount}");
                   Provider.of<MyState>(context, listen: false).setTravelsList(

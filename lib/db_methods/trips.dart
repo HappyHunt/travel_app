@@ -38,14 +38,12 @@ Future<List<Offer>> getTravelsList(
               offer.personCount! >= int.parse(personCount))
           : true;
       bool meetsStartDateCondition = startDate != null
-          ? (offer.startDate != null &&
-              (offer.startDate!.isAfter(startDate) ||
-                  offer.startDate!.isAtSameMomentAs(startDate)))
+          ? ((offer.startDate.isAfter(startDate) ||
+                  offer.startDate.isAtSameMomentAs(startDate)))
           : true;
       bool meetsEndDateCondition = endDate != null
-          ? (offer.endDate != null &&
-              (offer.endDate!.isBefore(endDate) ||
-                  offer.endDate!.isAtSameMomentAs(endDate)))
+          ? ((offer.endDate.isBefore(endDate) ||
+                  offer.endDate.isAtSameMomentAs(endDate)))
           : true;
 
       return meetsPersonCountCondition &&
@@ -55,7 +53,7 @@ Future<List<Offer>> getTravelsList(
 
     travelsList.forEach((offer) {
       print(
-          "Title: ${offer.title}, Price: ${offer.price}, Location: ${offer.city}");
+          "Title: ${offer.title}, Price: ${offer.price}, City: ${offer.city}, Geopoint:${offer.longitude} ${offer.latitude}");
     });
 
     return travelsList;

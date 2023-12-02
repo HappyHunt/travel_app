@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 final CollectionReference users = FirebaseFirestore.instance.collection('users');
 
+String userId = '';
+
 Future<void> addUser(String uid, String? firstName, String? lastName, String? email, DateTime? birthDate, String? phoneNumber) {
   return users
       .doc(uid)
@@ -27,6 +29,8 @@ Future<bool> checkIfUserExists(User? user) async {
 
   if (userSnapshot.exists) {
     print("Użytkownik już istnieje w bazie danych.");
+    userId = user.uid;
+
     return true;
   } else {
     print("Użytkownik nie istnieje w bazie danych.");
@@ -62,3 +66,4 @@ Future<void> updateUserData(String? uid, String firstName, String lastName, Stri
     print('Błąd aktualizacji danych użytkownika: $e');
   }
 }
+

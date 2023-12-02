@@ -22,19 +22,15 @@ void main() async {
 }
 
 ThemeData appTheme = ThemeData(
-  primaryColor: const Color(0xFF3E4095),
-  // Główny kolor aplikacji,
-  hintColor: const Color(0xFF16275A),
-  // Kolor akcentu
+  primaryColor: const Color(0xFF1E4232),
+  hintColor: const Color(0xFF152C23),
   secondaryHeaderColor: const Color(0xFF347555),
-  // Kolor tła AppBar
   colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFF5F5F5)),
   scaffoldBackgroundColor: const Color(0xFFF5F5F5),
-  // Kolor tła Scaffold
   shadowColor: Colors.grey,
-  // Kolor cienia
   indicatorColor: Colors.white,
   useMaterial3: true,
+
 );
 
 class MyApp extends StatelessWidget {

@@ -24,11 +24,12 @@ class WishList extends StatelessWidget {
             },
             child: _buildWishlistItem(
               title: offer.title,
+              place: offer.country + " / " + offer.city,
               price: "Cena: " + offer.price.toString(),
               dates: "Data: " + offer.endDate.toString(),
               location: offer.latitude.toString(),
               photoUrl: offer.photoUrl,
-              offer: offer,
+              offer: offer.description,
             ),
           );
         }).toList(),
@@ -39,53 +40,71 @@ class WishList extends StatelessWidget {
   Widget _buildWishlistItem({
     required String title,
     required String price,
+    required String place,
     required String dates,
     required String location,
     required String photoUrl,
-    required Offer offer,
+    required String offer,
   }) {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // Obraz
-            Container(
-              width: 80.0,
-              height: 80.0,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(photoUrl),
-                  fit: BoxFit.cover,
-                ),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-            ),
-            const SizedBox(width: 16.0),
-            // Szczegóły
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
+        child: Stack(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // Obraz
+                Container(
+                  width: 80.0,
+                  height: 80.0,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(photoUrl),
+                      fit: BoxFit.cover,
                     ),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                  const SizedBox(height: 8.0),
-                  Text(price),
-                  Text(dates),
-                  Text(location),
-                ],
+                ),
+                const SizedBox(width: 16.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18.0,
+                        ),
+                      ),
+                      Text(price),
+                      Text(place),
+                      Text(dates),
+                      Text(location),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Positioned(
+              top: 8.0,
+              right: 8.0,
+              child: GestureDetector(
+                onTap: () {
+                  // Obsługa kliknięcia w ikonę serduszka
+                  // Zmień wartość isObserved na przeciwną
+                  // Tu możesz dodać dowolną logikę, jeśli jest potrzebna
+                  // np. wywołanie funkcji, aktualizacja stanu itp.
+                },
               ),
             ),
           ],
         ),
       ),
     );
+
+
   }
 
   void _showOfferDetails(BuildContext context, Offer offer) {

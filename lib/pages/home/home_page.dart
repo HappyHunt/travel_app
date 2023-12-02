@@ -15,13 +15,13 @@ import 'app_bar.dart';
 import 'calendar_marked.dart';
 
 TextEditingController dateValueController = TextEditingController();
+TextEditingController personCountController = TextEditingController();
 var db = FirebaseFirestore.instance;
 
 String? selectedCountry;
 String? selectedLocation;
 DateTime? selectedStartDate;
 DateTime? selectedEndDate;
-var selectedPersonCount;
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -48,7 +48,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
   void initState() {
     super.initState();
     Provider.of<MyState>(context, listen: false)
-        .setTravelsList(0, null, null, null, null, null);
+        .setTravelsList(0, null, null, "", null, null);
     setCountries();
   }
 
@@ -218,11 +218,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
             ),
-            onChanged: (var newValue) {
-              setState(() {
-                selectedPersonCount = newValue;
-              });
-            },
+            controller: personCountController,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           ),
@@ -248,12 +244,12 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
               child: ElevatedButton(
                 onPressed: () async {
                   print(
-                      "Wyszukaj:  ${selectedCountry} , ${selectedLocation} , ${selectedStartDate} , ${selectedEndDate} , ${selectedPersonCount}");
+                      "Wyszukaj:  ${selectedCountry} , ${selectedLocation} , ${selectedStartDate} , ${selectedEndDate} , ${personCountController.text}");
                   Provider.of<MyState>(context, listen: false).setTravelsList(
                       hotelOrApartment,
                       selectedCountry,
                       selectedLocation,
-                      selectedPersonCount,
+                      personCountController.text,
                       selectedStartDate,
                       selectedEndDate);
                   setCountries();

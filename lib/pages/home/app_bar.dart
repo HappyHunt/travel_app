@@ -56,13 +56,13 @@ class _AppBarHomeState extends State<AppBarHome> {
             }).toList(),
             onTap: (int index) async {
               Provider.of<MyState>(context, listen: false).hotelOrApartment = index;
-              Provider.of<MyState>(context, listen: false).setTravelsList(index, null, null, null, null, null);
+              Provider.of<MyState>(context, listen: false).setTravelsList(index, null, null, "", null, null);
               dateValueController.clear();
+              personCountController.clear();
               selectedCountry = null;
               selectedLocation = null;
               selectedStartDate = null;
               selectedEndDate = null;
-              selectedPersonCount = null;
             },
           ),
         ),

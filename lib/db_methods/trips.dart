@@ -33,7 +33,7 @@ Future<List<Offer>> getTravelsList(
     print("Start: ${startDate}, End: ${endDate}");
 
     travelsList = travelsList.where((offer) {
-      bool meetsPersonCountCondition = personCount != null
+      bool meetsPersonCountCondition = personCount != ""
           ? (offer.personCount != null &&
               offer.personCount! >= int.parse(personCount))
           : true;

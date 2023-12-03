@@ -116,8 +116,8 @@ class TravelsListView extends StatelessWidget {
 
 class OfferDetailsScreen extends StatelessWidget {
   final Offer offer;
-
   const OfferDetailsScreen({super.key, required this.offer});
+
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +171,7 @@ class OfferDetailsScreen extends StatelessWidget {
               _buildDivider(),
               _buildCategoryRow(
                 icon: Icons.location_on,
-                content: offer.city,
+                content: '${offer.country} / ${offer.city}',
                 title: '',
                 color:  appTheme.primaryColor,
                 fontSize: 24.0,

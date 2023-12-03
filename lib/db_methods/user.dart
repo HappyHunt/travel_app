@@ -29,7 +29,6 @@ Future<bool> checkIfUserExists(User? user) async {
 
   if (userSnapshot.exists) {
     print("Użytkownik już istnieje w bazie danych.");
-    userId = user.uid;
 
     return true;
   } else {
@@ -51,6 +50,7 @@ Future<Map<String, dynamic>?> getUserData(String? uid) async {
     return null;
   }
 }
+
 
 Future<void> updateUserData(String? uid, String firstName, String lastName, String birthDate, String email, String phoneNumber) async {
   try {

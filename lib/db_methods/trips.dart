@@ -53,7 +53,8 @@ Future<List<Offer>> getTravelsList(
 
     travelsList.forEach((offer) {
       print(
-          "Title: ${offer.title}, Price: ${offer.price}, City: ${offer.city}, Geopoint:${offer.longitude} ${offer.latitude}");
+          "Title: ${offer.title}, Price: ${offer.price}, City: ${offer.city}, "
+              "Geopoint:${offer.longitude} ${offer.latitude}");
     });
 
     return travelsList;

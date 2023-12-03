@@ -1,210 +1,138 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:travel_app/main.dart';
-import '../offers/offers_data.dart';
-import '../offers/offers_provider.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:travel_app/pages/offers/offers_data.dart';
+import '../../db_methods/favorites.dart';
+import '../home/travel_list.dart';
 
-class WishList extends StatelessWidget {
-  const WishList({Key? key}) : super(key: key);
-
+class Wishlist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    List<Offer> observedOffer = OfferProvider.readOffersData();
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista obserwowanych ofert'),
+        title: Text('Twoje ulubione podróże'),
       ),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
-        children: observedOffer.map((offer) {
-          return GestureDetector(
-            onTap: () {
-              _showOfferDetails(context, offer);
-            },
-            child: _buildWishlistItem(
-              title: offer.title,
-              place: offer.country + " / " + offer.city,
-              price: "Cena: " + offer.price.toString(),
-              dates: "Data: " + offer.endDate.toString(),
-              location: offer.latitude.toString(),
-              photoUrl: offer.photoUrl,
-              offer: offer.description,
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
+      body: FutureBuilder<List<Offer>>(
+        future: getFavoritesList(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            List<Offer> wishlist = snapshot.data ?? [];
 
-  Widget _buildWishlistItem({
-    required String title,
-    required String price,
-    required String place,
-    required String dates,
-    required String location,
-    required String photoUrl,
-    required String offer,
-  }) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Stack(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // Obraz
-                Container(
-                  width: 80.0,
-                  height: 80.0,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(photoUrl),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
+            return ListView.builder(
+              itemCount: wishlist.length,
+              itemBuilder: (context, index) {
+                Offer offer = wishlist[index];
+                return GestureDetector(
+                  onTap: () {
+                    _showOfferDetailsDialog(context, offer);
+                  },
+                  child: Card(
+                    margin: const EdgeInsets.all(8.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          width: 100.0,
+                          height: 100.0,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(offer.photoUrl),
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
-                      ),
-                      Text(price),
-                      Text(place),
-                      Text(dates),
-                      Text(location),
-                    ],
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  offer.title,
+                                  style: const TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.calendar_today,
+                                      color: Colors.black,
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    Text(
+                                      ' ${offer.startDate.day}.${offer.startDate.month}.${offer.startDate.year}'
+                                          ' - ${offer.endDate.day}.${offer.endDate.month}.${offer.endDate.year}',
+                                      style: const TextStyle(fontSize: 15.0),
+                                    ),
+                                  ],
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Text(
+                                    '${offer.price} zł/os',
+                                    style: const TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.favorite,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            _toggleFavorite(offer);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Positioned(
-              top: 8.0,
-              right: 8.0,
-              child: GestureDetector(
-                onTap: () {
-                  // Obsługa kliknięcia w ikonę serduszka
-                  // Zmień wartość isObserved na przeciwną
-                  // Tu możesz dodać dowolną logikę, jeśli jest potrzebna
-                  // np. wywołanie funkcji, aktualizacja stanu itp.
-                },
-              ),
-            ),
-          ],
-        ),
+                );
+              },
+            );
+          }
+        },
       ),
     );
-
-
   }
 
-  void _showOfferDetails(BuildContext context, Offer offer) {
+  void _showOfferDetailsDialog(BuildContext context, Offer offer) {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => OfferDetailsScreen(offer: offer),
       ),
     );
   }
-}
 
-class OfferDetailsScreen extends StatelessWidget {
-  final Offer offer;
+  void _toggleFavorite(Offer offer) async {
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final CollectionReference travelsCollection =
+    firestore.collection('trips');
 
-  const OfferDetailsScreen({Key? key, required this.offer}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Szczegóły oferty'),
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Card(
-            elevation: 4.0, // Add a subtle shadow
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: Image.asset(
-                offer.photoUrl,
-                height: 200.0,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  offer.title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 24.0,
-                  ),
-                ),
-                SizedBox(height: 8.0),
-                Text(
-                  'Cena: ${offer.price}',
-                  style: TextStyle(
-                    color: appTheme.hintColor, // Use an accent color for emphasis
-                  ),
-                ),
-                Text('Data: ${offer.endDate}'),
-                Text('Lokalizacja: ${offer.city}'),
-                Text('Opis: ${offer.description}'),
-              ],
-            ),
-          ),
-          Spacer(),
-          Container(
-            height: 200.0, // Wysokość obszaru mapy
-            child: GoogleMap(
-              onMapCreated: (controller) {
-                // Tutaj możesz dodać dodatkową logikę obsługi mapy
-              },
-              initialCameraPosition: CameraPosition(
-                target: LatLng(36.54978068411743, 29.1157510185125),
-                zoom: 14.0,
-              ),
-              markers: Set<Marker>.from([
-                Marker(
-                  markerId: MarkerId('offer_location'),
-                  position: LatLng(36.54978068411743, 29.1157510185125),
-                  infoWindow: InfoWindow(
-                    title: 'Lokalizacja oferty',
-                    snippet: offer.country,
-                  ),
-                ),
-              ]),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child:
-            ElevatedButton(
-              onPressed: (){},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: appTheme.secondaryHeaderColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-              ),
-              child: Text('Rezerwuj', style: TextStyle(fontSize:20, color: Colors.white)),
-            ),
-          ),
-        ],
-      ),
-    );
+    if (offer.observedBy
+        .contains(FirebaseAuth.instance.currentUser?.uid)) {
+      await travelsCollection.doc(offer.uid).update({
+        'observedBy':
+        FieldValue.arrayRemove([FirebaseAuth.instance.currentUser?.uid]),
+      });
+    } else {
+      await travelsCollection.doc(offer.uid).update({
+        'observedBy':
+        FieldValue.arrayUnion([FirebaseAuth.instance.currentUser?.uid]),
+      });
+    }
   }
 }

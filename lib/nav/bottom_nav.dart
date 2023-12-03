@@ -9,7 +9,7 @@ import '../pages/wishlist/wishlist_page.dart';
 import 'not_logged_in_view.dart';
 
 int sel = 0;
-List<Widget> bodies = [const HomeScreen(), const WishList(), const Reservations(), const Profile()];
+List<Widget> bodies = [const HomeScreen(),  Wishlist(), const Reservations(), const Profile()];
 
 class BottomNav extends StatefulWidget {
   const BottomNav({Key? key}) : super(key: key);

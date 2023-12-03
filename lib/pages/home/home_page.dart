@@ -4,13 +4,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:travel_app/db_methods/trips.dart';
-import 'package:travel_app/pages/home/travel-list.dart';
+import 'package:travel_app/pages/home/travel_list.dart';
 import 'package:travel_app/pages/offers/offers_data.dart';
 
 import '../../db_methods/countries_and_cities.dart';
 import '../../main.dart';
-import '../../models/model_countries.dart';
 import 'app_bar.dart';
 import 'calendar_marked.dart';
 
@@ -66,7 +64,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
           _buildContent(context, hotelOrApartment),
           dataProvider.isLoading
               ? const Center(child: CircularProgressIndicator())
-              : TravelsListView(dataList: travelsList),
+              : TravelsListView(dataList: travelsList, onFavoriteToggle: (Offer ) {  },),
         ],
       ),
       Positioned(
@@ -98,7 +96,7 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Container(
+          content: SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
             height: MediaQuery.of(context).size.height * 0.38,
             child: CalendarWidget(),

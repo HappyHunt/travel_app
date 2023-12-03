@@ -1,14 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../db_methods/user.dart';
 import '../../main.dart';
 import '../offers/offers_data.dart';
 
 class TravelsListView extends StatelessWidget {
   final List<Offer> dataList;
+  final Function(Offer) onFavoriteToggle;
 
-  TravelsListView({required this.dataList});
+  const TravelsListView({
+    Key? key,
+    required this.dataList,
+    required this.onFavoriteToggle,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +27,7 @@ class TravelsListView extends StatelessWidget {
             _showOfferDetailsDialog(context, dataList[index]);
           },
           child: Card(
-            margin: EdgeInsets.all(8.0),
+            margin: const EdgeInsets.all(8.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -39,7 +44,7 @@ class TravelsListView extends StatelessWidget {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -56,11 +61,11 @@ class TravelsListView extends StatelessWidget {
                               Icons.calendar_today,
                               color: Colors.black,
                             ),
-                            SizedBox(width: 8.0),
+                            const SizedBox(width: 8.0),
                             Text(
                               ' ${dataList[index].startDate.day}.${dataList[index].startDate.month}.${dataList[index].startDate.year}'
                               ' - ${dataList[index].endDate.day}.${dataList[index].endDate.month}.${dataList[index].endDate.year}',
-                              style: TextStyle(fontSize: 15.0),
+                              style: const TextStyle(fontSize: 15.0),
                             ),
                           ],
                         ),
@@ -81,13 +86,15 @@ class TravelsListView extends StatelessWidget {
                 ),
                 IconButton(
                   icon: Icon(
-                    dataList[index].observedBy.contains(userId)
+                    dataList[index].observedBy.contains(FirebaseAuth.instance.currentUser?.uid)
                         ? Icons.favorite
                         : Icons.favorite_border,
                     color: Colors.red,
                   ),
                   onPressed: () {
                     _toggleFavorite(dataList[index]);
+                    setState(){};
+                    //TODO
                   },
                 ),
               ],
@@ -110,7 +117,7 @@ class TravelsListView extends StatelessWidget {
 class OfferDetailsScreen extends StatelessWidget {
   final Offer offer;
 
-  const OfferDetailsScreen({Key? key, required this.offer}) : super(key: key);
+  const OfferDetailsScreen({super.key, required this.offer});
 
   @override
   Widget build(BuildContext context) {
@@ -171,7 +178,7 @@ class OfferDetailsScreen extends StatelessWidget {
               ),              _buildDivider(),
               _buildCategoryRow(
                 icon: Icons.event_available,
-                content: 'Wolne miejsca: ' + offer.personCount.toString(),
+                content: 'Wolne miejsca: ${offer.personCount}',
                 title: '',
                 color:  appTheme.primaryColor,
                 fontSize: 24.0,
@@ -196,24 +203,14 @@ class OfferDetailsScreen extends StatelessWidget {
         ),
       ),
           SizedBox(
-            height: 200.0, // Wysokość obszaru mapy
+            height: 200.0,
             child: GoogleMap(
               onMapCreated: (controller) {
-                // Tutaj możesz dodać dodatkową logikę obsługi mapy
               },
               initialCameraPosition: CameraPosition(
                 target: LatLng(offer.longitude, offer.latitude),
                 zoom: 14.0,
               ),
-              markers: <Marker>{
-                Marker(
-                  markerId: MarkerId('offer_location'),
-                  position: LatLng(36.54978068411743, 29.1157510185125),
-                  infoWindow: InfoWindow(
-                    snippet: offer.country,
-                  ),
-                ),
-              },
             ),
           ),
           Padding(
@@ -250,7 +247,7 @@ Widget _buildCategoryRow({
       ),
       Text(
         ' $title  ',
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -270,23 +267,23 @@ Widget _buildDivider() {
   return Container(
     width: double.infinity,
     height: 1.0,
-    color: Colors.grey, // Kolor kreski
-    margin: const EdgeInsets.symmetric(vertical: 8.0), // Odstęp górny i dolny
+    color: Colors.grey,
+    margin: const EdgeInsets.symmetric(vertical: 8.0),
   );
 }
 
 void _toggleFavorite(Offer offer) async {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final CollectionReference travelsCollection =
-  _firestore.collection('trips');
+  firestore.collection('trips');
 
-  if (offer.observedBy.contains(userId)) {
+  if (offer.observedBy.contains(FirebaseAuth.instance.currentUser?.uid)) {
     await travelsCollection.doc(offer.uid).update({
-      'observedBy': FieldValue.arrayRemove([userId]),
+      'observedBy': FieldValue.arrayRemove([FirebaseAuth.instance.currentUser?.uid]),
     });
   } else {
     await travelsCollection.doc(offer.uid).update({
-      'observedBy': FieldValue.arrayUnion([userId]),
+      'observedBy': FieldValue.arrayUnion([FirebaseAuth.instance.currentUser?.uid]),
     });
   }
 }

@@ -236,11 +236,15 @@ class ReservationCard extends StatelessWidget {
             children: [
               Text('Imię: ${reservation.firstName}',
                   style: TextStyle(fontSize: 18.0)),
+              _buildDivider(),
               Text('Nazwisko: ${reservation.lastName}',
                   style: TextStyle(fontSize: 18.0)),
+              _buildDivider(),
               Text('Liczba uczestników: ${reservation.participants}',
                   style: TextStyle(fontSize: 18.0)),
+              _buildDivider(),
               Text('Miasto: ${offer.city}', style: TextStyle(fontSize: 18.0)),
+              _buildDivider(),
               Text(
                 'Daty: ${offer.startDate.day}.${offer.startDate.month}.${offer
                     .startDate.year}'
@@ -248,6 +252,7 @@ class ReservationCard extends StatelessWidget {
                     .endDate.year}',
                 style: TextStyle(fontSize: 18.0),
               ),
+              _buildDivider(),
               Text('Łączna cena: ${reservation.totalPrice} zł',
                   style: TextStyle(fontSize: 18.0)),
             ],
@@ -262,6 +267,16 @@ class ReservationCard extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildDivider() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Divider(
+        height: 1,
+        color: Colors.grey,
+      ),
     );
   }
 }

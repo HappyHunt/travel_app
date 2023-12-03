@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../main.dart';
 import '../offers/offers_data.dart';
+import '../reservations/make_reservation.dart';
 
 class TravelsListView extends StatelessWidget {
   final List<Offer> dataList;
@@ -116,8 +117,8 @@ class TravelsListView extends StatelessWidget {
 
 class OfferDetailsScreen extends StatelessWidget {
   final Offer offer;
-  const OfferDetailsScreen({super.key, required this.offer});
 
+  const OfferDetailsScreen({super.key, required this.offer});
 
   @override
   Widget build(BuildContext context) {
@@ -216,7 +217,9 @@ class OfferDetailsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                reserveTrip(offer, context);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: appTheme.secondaryHeaderColor,
                 shape: RoundedRectangleBorder(
@@ -272,10 +275,9 @@ Widget _buildDivider() {
   );
 }
 
-void _toggleFavorite(Offer offer) async {
+void _toggleFavorite( Offer offer) async {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
-  final CollectionReference travelsCollection =
-  firestore.collection('trips');
+  final CollectionReference travelsCollection = firestore.collection('trips');
 
   if (offer.observedBy.contains(FirebaseAuth.instance.currentUser?.uid)) {
     await travelsCollection.doc(offer.uid).update({
@@ -286,4 +288,18 @@ void _toggleFavorite(Offer offer) async {
       'observedBy': FieldValue.arrayUnion([FirebaseAuth.instance.currentUser?.uid]),
     });
   }
+
+}
+
+void reserveTrip(Offer offer, BuildContext context){
+  // Navigate to the reservation screen
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => MakeReservationScreen(
+        tripId: offer.uid,
+        offerTitle: offer.title,
+      ),
+    ),
+  );
 }

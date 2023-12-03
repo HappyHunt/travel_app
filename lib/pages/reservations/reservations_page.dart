@@ -205,8 +205,8 @@ class ReservationCard extends StatelessWidget {
                 ],
               ),
             ),
-        );
-      }
+          );
+        }
       },
     );
   }
@@ -234,17 +234,22 @@ class ReservationCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Imię: ${reservation.firstName}'),
-              Text('Nazwisko: ${reservation.lastName}'),
-              Text('Liczba uczestników: ${reservation.participants}'),
-              Text('Miasto: ${offer.city}'),
+              Text('Imię: ${reservation.firstName}',
+                  style: TextStyle(fontSize: 18.0)),
+              Text('Nazwisko: ${reservation.lastName}',
+                  style: TextStyle(fontSize: 18.0)),
+              Text('Liczba uczestników: ${reservation.participants}',
+                  style: TextStyle(fontSize: 18.0)),
+              Text('Miasto: ${offer.city}', style: TextStyle(fontSize: 18.0)),
               Text(
                 'Daty: ${offer.startDate.day}.${offer.startDate.month}.${offer
                     .startDate.year}'
                     ' - ${offer.endDate.day}.${offer.endDate.month}.${offer
                     .endDate.year}',
+                style: TextStyle(fontSize: 18.0),
               ),
-              Text('Łączna cena: ${reservation.totalPrice} zł'),
+              Text('Łączna cena: ${reservation.totalPrice} zł',
+                  style: TextStyle(fontSize: 18.0)),
             ],
           ),
           actions: [
@@ -252,7 +257,7 @@ class ReservationCard extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Zamknij'),
+              child: Text('Zamknij', style: TextStyle(fontSize: 18.0)),
             ),
           ],
         );
@@ -261,19 +266,4 @@ class ReservationCard extends StatelessWidget {
   }
 }
 
-void main() {
-  runApp(MyApp());
-}
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Rezerwacje',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: ReservationsListView(),
-    );
-  }
-}

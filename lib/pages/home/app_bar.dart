@@ -36,14 +36,12 @@ class _AppBarHomeState extends State<AppBarHome> {
             tabs: categories.map((String category) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 2.0),
-                //podkreślnik
                 child: Container(
                   decoration: BoxDecoration(
                     color: appTheme.highlightColor,
                     borderRadius: BorderRadius.circular(30.0),
                   ),
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  //ikonki hotel itp
                   width: 130.0,
                   child: Tab(
                     icon: category == 'Wypoczynek'

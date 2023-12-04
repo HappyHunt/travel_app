@@ -76,7 +76,6 @@ class _BottomNavState extends State<BottomNav> {
     context = context;
 
     return Scaffold(
-      // body: Center(child: (bodies.elementAt(sel))),
       body: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
@@ -97,7 +96,6 @@ class _BottomNavState extends State<BottomNav> {
         currentIndex: sel,
         elevation: 1.5,
         onTap: (int index) {
-          // obsługa zmiany zakładek
           if (index != sel) {
             setState(() {
               sel = index;

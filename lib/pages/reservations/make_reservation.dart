@@ -54,7 +54,6 @@ class _MakeReservationScreenState extends State<MakeReservationScreen> {
       }
     } catch (error) {
       print('Error: $error');
-      // Handle the error as needed
     }
   }
 
@@ -69,7 +68,6 @@ class _MakeReservationScreenState extends State<MakeReservationScreen> {
     if (value == null || value.isEmpty) {
       return 'To pole nie może być puste';
     }
-    // Add additional phone number validation if needed
     return null;
   }
 
@@ -79,103 +77,105 @@ class _MakeReservationScreenState extends State<MakeReservationScreen> {
       appBar: AppBar(
         title: Text('Rezerwacja oferty'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              Text(widget.offerTitle),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Imię'),
-                controller: firstNameController,
-                validator: _validateName,
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Nazwisko'),
-                controller: lastNameController,
-                validator: _validateName,
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Numer telefonu'),
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(10),
-                ],
-                controller: phoneController,
-                validator: _validatePhoneNumber,
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Liczba osób'),
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                controller: participantsController,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'To pole nie może być puste';
-                  }
-                  int? parsedValue = int.tryParse(value);
-                  if (parsedValue == null || parsedValue <= 0) {
-                    return 'Wprowadź poprawną liczbę';
-                  }
-                  return null;
-                },
-              ),
-              const SizedBox(height: 15.0),
-              Row(
-                children: [
-                  Checkbox(
-                    value: _acceptTerms,
-                    onChanged: (value) {
-                      setState(() {
-                        _acceptTerms = value ?? false;
-                      });
-                    },
-                  ),
-                  const Text('Zapoznałem się z ofertą i akceptuję \nwarunki rezerwacji oraz regulamin '
-                      '\naplikacji VoyageVoyage.'
-                  ),
-                ],
-              ),
-              const SizedBox(height: 15.0),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    // Form is valid, proceed with reservation
-                    if (_acceptTerms) {
-                      Reservation reservation = Reservation(
-                        tripId: widget.tripId,
-                        userId: FirebaseAuth.instance.currentUser!.uid,
-                        firstName: firstNameController.text,
-                        lastName: lastNameController.text,
-                        phoneNumber: phoneController.text,
-                        participants: int.parse(participantsController.text),
-                        totalPrice: (int.parse(participantsController.text) * widget.price),
-                      );
-
-                      await ReservationService.makeReservation(reservation);
-                      await TripService.updateAvailableSeats(widget.tripId, reservation.participants);
-
-                      participantsController.text = '';
-
-                      Navigator.of(context).pop();
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Warunki rezerwacji muszą być zaakceptowane.'),
-                          duration: Duration(seconds: 3),
-                        ),
-                      );
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                Text(widget.offerTitle),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Imię'),
+                  controller: firstNameController,
+                  validator: _validateName,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Nazwisko'),
+                  controller: lastNameController,
+                  validator: _validateName,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Numer telefonu'),
+                  keyboardType: TextInputType.phone,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(10),
+                  ],
+                  controller: phoneController,
+                  validator: _validatePhoneNumber,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Liczba osób'),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                  controller: participantsController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'To pole nie może być puste';
                     }
-                  }
-                },
-                child: const Text('Rezerwuj'),
-              ),
-            ],
+                    int? parsedValue = int.tryParse(value);
+                    if (parsedValue == null || parsedValue <= 0) {
+                      return 'Wprowadź poprawną liczbę';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 15.0),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: _acceptTerms,
+                      onChanged: (value) {
+                        setState(() {
+                          _acceptTerms = value ?? false;
+                        });
+                      },
+                    ),
+                    const Text('Zapoznałem się z ofertą i akceptuję \nwarunki rezerwacji oraz regulamin '
+                        '\naplikacji VoyageVoyage.'
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 15.0),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      if (_acceptTerms) {
+                        Reservation reservation = Reservation(
+                          tripId: widget.tripId,
+                          userId: FirebaseAuth.instance.currentUser!.uid,
+                          firstName: firstNameController.text,
+                          lastName: lastNameController.text,
+                          phoneNumber: phoneController.text,
+                          participants: int.parse(participantsController.text),
+                          totalPrice: (int.parse(participantsController.text) * widget.price),
+                        );
+
+                        await ReservationService.makeReservation(reservation);
+                        await TripService.updateAvailableSeats(widget.tripId, reservation.participants);
+
+                        participantsController.text = '';
+
+                        Navigator.of(context).pop();
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Warunki rezerwacji muszą być zaakceptowane.'),
+                            duration: Duration(seconds: 3),
+                          ),
+                        );
+                      }
+                    }
+                  },
+                  child: const Text('Rezerwuj'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 }
+

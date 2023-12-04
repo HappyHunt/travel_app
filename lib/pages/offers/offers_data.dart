@@ -5,12 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Offer {
   late String uid;
   late String title;
-  late num? price;
+  late int price;
   late DateTime endDate;
   late DateTime startDate;
   late String country;
   late String city;
-  late num? personCount;
+  late num personCount;
   late double longitude;
   late double latitude;
   late String photoUrl;
@@ -40,14 +40,14 @@ class Offer {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Offer(
       title: data['title'] ?? '',
-      price: (data['price'] as num?) ?? 0,
+      price: (data['price']),
       endDate: (data['endDate'] as Timestamp).toDate(),
       startDate: (data['startDate'] as Timestamp).toDate(),
       country: data['country'] ?? '',
       city: data['city'] ?? '',
-      personCount: (data['personCount'] as num?)?.toInt() ?? 0,
-      longitude: (data['longitude'] as num?)?.toDouble() ?? 0,
-      latitude: (data['latitude'] as num?)?.toDouble() ?? 0,
+      personCount: (data['personCount'])?? 0,
+      longitude: (data['longitude'])?? 0,
+      latitude: (data['latitude'] )?? 0,
       photoUrl: data['photoUrl'] ?? '',
       description: data['description'] ?? '',
       observedBy: (data['observedBy'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],

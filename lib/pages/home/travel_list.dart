@@ -299,6 +299,7 @@ void reserveTrip(Offer offer, BuildContext context){
       builder: (context) => MakeReservationScreen(
         tripId: offer.uid,
         offerTitle: offer.title,
+        price: offer.price
       ),
     ),
   );

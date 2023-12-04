@@ -11,6 +11,7 @@ class ReservationService {
       'firstName': reservation.firstName,
       'lastName': reservation.lastName,
       'participants': reservation.participants,
+      'totalPrice': reservation.totalPrice,
     });
   }
 }
@@ -20,7 +21,8 @@ class Reservation {
   final String userId;
   final String firstName;
   final String lastName;
-  final num? participants;
+  final int participants;
+  final int totalPrice;
 
   Reservation({
     required this.tripId,
@@ -28,5 +30,6 @@ class Reservation {
     required this.firstName,
     required this.lastName,
     required this.participants,
+    required this.totalPrice,
   });
 }

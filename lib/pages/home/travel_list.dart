@@ -133,7 +133,8 @@ class OfferDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Szczegóły oferty'),
+        title: const Text('Szczegóły oferty', style: TextStyle(color: Colors.white)),
+        backgroundColor: appTheme.secondaryHeaderColor,
       ),
       body: ListView(
         children: [
@@ -306,14 +307,14 @@ void _toggleFavorite( Offer offer) async {
 }
 
 void reserveTrip(Offer offer, BuildContext context){
-  // Navigate to the reservation screen
   Navigator.push(
     context,
     MaterialPageRoute(
       builder: (context) => MakeReservationScreen(
         tripId: offer.uid,
         offerTitle: offer.title,
-        price: offer.price
+        price: offer.price,
+        availableSlots: offer.personCount,
       ),
     ),
   );

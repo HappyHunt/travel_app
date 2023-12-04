@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import '../../db_methods/reservation.dart';
 import '../../db_methods/trip_update.dart';
 import '../../db_methods/user.dart';
+import '../../main.dart';
 
 TextEditingController firstNameController = TextEditingController();
 TextEditingController lastNameController = TextEditingController();
@@ -15,12 +16,14 @@ class MakeReservationScreen extends StatefulWidget {
   final String tripId;
   final String offerTitle;
   final int price;
+  final num availableSlots;
 
   const MakeReservationScreen({
     super.key,
     required this.tripId,
     required this.offerTitle,
     required this.price,
+    required this.availableSlots,
   });
 
   @override
@@ -75,7 +78,8 @@ class _MakeReservationScreenState extends State<MakeReservationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Rezerwacja oferty'),
+        title: const Text('Rezerwacja oferty', style: TextStyle(color: Colors.white)),
+        backgroundColor: appTheme.secondaryHeaderColor,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -84,7 +88,14 @@ class _MakeReservationScreenState extends State<MakeReservationScreen> {
             key: _formKey,
             child: Column(
               children: [
-                Text(widget.offerTitle),
+                const Column(
+                  children: [
+                    Text(
+                      '\nAby zarezerwować podróż, wprowadź poniższe dane: \n',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
                 TextFormField(
                   decoration: const InputDecoration(labelText: 'Imię'),
                   controller: firstNameController,
@@ -142,22 +153,34 @@ class _MakeReservationScreenState extends State<MakeReservationScreen> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       if (_acceptTerms) {
-                        Reservation reservation = Reservation(
-                          tripId: widget.tripId,
-                          userId: FirebaseAuth.instance.currentUser!.uid,
-                          firstName: firstNameController.text,
-                          lastName: lastNameController.text,
-                          phoneNumber: phoneController.text,
-                          participants: int.parse(participantsController.text),
-                          totalPrice: (int.parse(participantsController.text) * widget.price),
-                        );
+                        int participants = int.parse(participantsController.text);
+                        if (participants > widget.availableSlots) {
+                          // Display an error message when participants exceed available slots
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Liczba uczestników przekracza dostępną liczbę miejsc.'),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                        } else {
+                          // Proceed with the reservation
+                          Reservation reservation = Reservation(
+                            tripId: widget.tripId,
+                            userId: FirebaseAuth.instance.currentUser!.uid,
+                            firstName: firstNameController.text,
+                            lastName: lastNameController.text,
+                            phoneNumber: phoneController.text,
+                            participants: participants,
+                            totalPrice: participants * widget.price,
+                          );
 
-                        await ReservationService.makeReservation(reservation);
-                        await TripService.updateAvailableSeats(widget.tripId, reservation.participants);
+                          await ReservationService.makeReservation(reservation);
+                          await TripService.updateAvailableSeats(widget.tripId, participants);
 
-                        participantsController.text = '';
+                          participantsController.text = '';
 
-                        Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

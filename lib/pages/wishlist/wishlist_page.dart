@@ -1,16 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:travel_app/pages/offers/offers_data.dart';
 import '../../db_methods/favorites.dart';
+import '../../main.dart';
+import '../home/home_page.dart';
 import '../home/travel_list.dart';
 
 class Wishlist extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    int hotelOrApartment = Provider.of<MyState>(context).hotelOrApartment;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Twoje ulubione podróże'),
+        title: Text('Twoje ulubione podróże', style: TextStyle(color: Colors.white)),
+        backgroundColor: appTheme.secondaryHeaderColor,
       ),
       body: FutureBuilder<List<Offer>>(
         future: getFavoritesList(),
@@ -21,7 +26,6 @@ class Wishlist extends StatelessWidget {
             return Text('Error: ${snapshot.error}');
           } else {
             List<Offer> wishlist = snapshot.data ?? [];
-
             return ListView.builder(
               itemCount: wishlist.length,
               itemBuilder: (context, index) {
@@ -95,6 +99,13 @@ class Wishlist extends StatelessWidget {
                           ),
                           onPressed: () {
                             _toggleFavorite(offer);
+                            Provider.of<MyState>(context, listen: false).setTravelsList(
+                                hotelOrApartment,
+                                selectedCountry,
+                                selectedLocation,
+                                personCountController.text,
+                                selectedStartDate,
+                                selectedEndDate);
                           },
                         ),
                       ],

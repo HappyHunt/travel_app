@@ -37,11 +37,13 @@ Future<bool> checkIfUserExists(User? user) async {
   }
 }
 
+
+
 Future<Map<String, dynamic>?> getUserData(String? uid) async {
   try {
     DocumentSnapshot userSnapshot = await users.doc(uid).get();
     if (userSnapshot.exists) {
-      return userSnapshot.data() as Map<String, dynamic>;
+        return userSnapshot.data() as Map<String, dynamic>;
     } else {
       return null;
     }
@@ -52,7 +54,8 @@ Future<Map<String, dynamic>?> getUserData(String? uid) async {
 }
 
 
-Future<void> updateUserData(String? uid, String firstName, String lastName, String birthDate, String email, String phoneNumber) async {
+Future<void> updateUserData(String? uid, String firstName, String lastName,
+    String birthDate, String email, String phoneNumber) async {
   try {
     await users.doc(uid).update({
       'firstName': firstName,
@@ -67,3 +70,20 @@ Future<void> updateUserData(String? uid, String firstName, String lastName, Stri
   }
 }
 
+Future<String> getFirstNameByUid(String uid) async {
+  try {
+    DocumentSnapshot userSnapshot = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+    if (userSnapshot.exists) {
+      String firstName = (userSnapshot.data() as Map<String, dynamic>?)?['firstName'] ?? '';
+      print('Imię użytkownika o UID $uid: $firstName');
+      return firstName;
+    } else {
+      print('Użytkownik o UID $uid nie istnieje.');
+      return ''; // Lub inną wartość domyślną w przypadku braku użytkownika
+    }
+  } catch (error) {
+    print('Błąd podczas pobierania danych z Firebase: $error');
+    return ''; // Lub inną wartość domyślną w przypadku błędu
+  }
+}

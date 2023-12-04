@@ -12,6 +12,7 @@ class ReservationService {
       'lastName': reservation.lastName,
       'participants': reservation.participants,
       'totalPrice': reservation.totalPrice,
+      'phoneNumber': reservation.phoneNumber,
     });
   }
 }
@@ -23,6 +24,7 @@ class Reservation {
   final String lastName;
   final int participants;
   final int totalPrice;
+  final String phoneNumber;
 
   Reservation({
     required this.tripId,
@@ -31,5 +33,6 @@ class Reservation {
     required this.lastName,
     required this.participants,
     required this.totalPrice,
+    required this.phoneNumber,
   });
 }

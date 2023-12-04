@@ -226,18 +226,23 @@ class OfferDetailsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: offer.personCount > 0
+                  ? () {
                 reserveTrip(offer, context);
-              },
+              }
+                  : null,
               style: ElevatedButton.styleFrom(
                 backgroundColor: appTheme.secondaryHeaderColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
               ),
-              child: const Text('Rezerwuj',
-                  style: TextStyle(fontSize: 20, color: Colors.white)),
-            ),
+              child: const Text(
+                'Rezerwuj',
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            )
+
           ),
         ],
       ),

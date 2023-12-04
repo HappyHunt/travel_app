@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../main.dart';
+
 class Reservation {
   String userId;
   String tripId;
@@ -77,26 +79,33 @@ class ReservationsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Twoje rezerwacje'),
+        title: const Text('Twoje rezerwacje', style: TextStyle(color: Colors.white)),
+        backgroundColor: appTheme.secondaryHeaderColor,
       ),
-      body: StreamBuilder<List<Reservation>>(
-        stream: getReservationsStream(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            List<Reservation> reservations = snapshot.data ?? [];
+      body: SingleChildScrollView(
+        child: StreamBuilder<List<Reservation>>(
+          stream: getReservationsStream(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else {
+              List<Reservation> reservations = snapshot.data ?? [];
 
-            return Column(
-              children: [
-                for (int index = 0; index < reservations.length; index++)
-                  ReservationCard(reservation: reservations[index]),
-              ],
-            );
-          }
-        },
+              return Column(
+                children: [
+                  for (int index = 0; index < reservations.length; index++)
+                    ReservationCard(reservation: reservations[index]),
+                ],
+              );
+            }
+          },
+        ),
       ),
     );
   }
@@ -116,8 +125,7 @@ class ReservationsListView extends StatelessWidget {
 class ReservationCard extends StatelessWidget {
   final Reservation reservation;
 
-  const ReservationCard({Key? key, required this.reservation})
-      : super(key: key);
+  const ReservationCard({super.key, required this.reservation});
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +133,7 @@ class ReservationCard extends StatelessWidget {
       future: getOfferDetails(reservation.tripId),
       builder: (context, offerSnapshot) {
         if (offerSnapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
+          return const CircularProgressIndicator();
         } else if (offerSnapshot.hasError) {
           return Text('Error: ${offerSnapshot.error}');
         } else {
@@ -164,7 +172,7 @@ class ReservationCard extends StatelessWidget {
 
                           ),
                         ),
-                        SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
                         Row(
                           children: [
                             const Icon(
@@ -229,32 +237,32 @@ class ReservationCard extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Szczegóły rezerwacji'),
+          title: const Text('Szczegóły rezerwacji'),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('Imię: ${reservation.firstName}',
-                  style: TextStyle(fontSize: 18.0)),
+                  style: const TextStyle(fontSize: 18.0)),
               _buildDivider(),
               Text('Nazwisko: ${reservation.lastName}',
-                  style: TextStyle(fontSize: 18.0)),
+                  style: const TextStyle(fontSize: 18.0)),
               _buildDivider(),
               Text('Liczba uczestników: ${reservation.participants}',
-                  style: TextStyle(fontSize: 18.0)),
+                  style: const TextStyle(fontSize: 18.0)),
               _buildDivider(),
-              Text('Miasto: ${offer.city}', style: TextStyle(fontSize: 18.0)),
+              Text('Miasto: ${offer.city}', style: const TextStyle(fontSize: 18.0)),
               _buildDivider(),
               Text(
                 'Daty: ${offer.startDate.day}.${offer.startDate.month}.${offer
                     .startDate.year}'
                     ' - ${offer.endDate.day}.${offer.endDate.month}.${offer
                     .endDate.year}',
-                style: TextStyle(fontSize: 18.0),
+                style: const TextStyle(fontSize: 18.0),
               ),
               _buildDivider(),
               Text('Łączna cena: ${reservation.totalPrice} zł',
-                  style: TextStyle(fontSize: 18.0)),
+                  style: const TextStyle(fontSize: 18.0)),
             ],
           ),
           actions: [
@@ -262,7 +270,7 @@ class ReservationCard extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Zamknij', style: TextStyle(fontSize: 18.0)),
+              child: const Text('Zamknij', style: TextStyle(fontSize: 18.0)),
             ),
           ],
         );
@@ -271,8 +279,8 @@ class ReservationCard extends StatelessWidget {
   }
 
   Widget _buildDivider() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
       child: Divider(
         height: 1,
         color: Colors.grey,

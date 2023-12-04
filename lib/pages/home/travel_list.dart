@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import '../../main.dart';
 import '../offers/offers_data.dart';
 import '../reservations/make_reservation.dart';
+import 'home_page.dart';
 
 class TravelsListView extends StatelessWidget {
   final List<Offer> dataList;
@@ -18,6 +20,8 @@ class TravelsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int hotelOrApartment = Provider.of<MyState>(context).hotelOrApartment;
+
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -66,7 +70,7 @@ class TravelsListView extends StatelessWidget {
                             Text(
                               ' ${dataList[index].startDate.day}.${dataList[index].startDate.month}.${dataList[index].startDate.year}'
                               ' - ${dataList[index].endDate.day}.${dataList[index].endDate.month}.${dataList[index].endDate.year}',
-                              style: const TextStyle(fontSize: 15.0),
+                              style: const TextStyle(fontSize: 13.0),
                             ),
                           ],
                         ),
@@ -94,8 +98,13 @@ class TravelsListView extends StatelessWidget {
                   ),
                   onPressed: () {
                     _toggleFavorite(dataList[index]);
-                    setState(){};
-                    //TODO
+                    Provider.of<MyState>(context, listen: false).setTravelsList(
+                        hotelOrApartment,
+                        selectedCountry,
+                        selectedLocation,
+                        personCountController.text,
+                        selectedStartDate,
+                        selectedEndDate);
                   },
                 ),
               ],

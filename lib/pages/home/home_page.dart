@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -132,8 +130,6 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
   }
 
   Widget _buildContent(BuildContext context, int hotelOrApartment) {
-    final CollectionReference countriesCollection =
-        FirebaseFirestore.instance.collection('trips');
 
     return Padding(
       padding: const EdgeInsets.all(20.0),
@@ -250,7 +246,6 @@ class _HomeSearchScreenState extends State<HomeSearchScreen> {
                       personCountController.text,
                       selectedStartDate,
                       selectedEndDate);
-                  setCountries();
                 },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),

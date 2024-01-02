@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'package:travel_app/nav/bottom_nav.dart';
 import 'package:travel_app/pages/login/login_or_sign_up.dart';
 import 'package:travel_app/pages/offers/offers_data.dart';
 import 'db_methods/trips.dart';
+import 'firebase_api.dart';
 import 'firebase_options.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options:DefaultFirebaseOptions.currentPlatform);
+  await FirebaseApi().initNotifications();
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => MyState(),
@@ -36,7 +37,6 @@ ThemeData appTheme = ThemeData(
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

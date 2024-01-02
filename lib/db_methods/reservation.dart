@@ -18,13 +18,13 @@ class ReservationService {
 }
 
 class Reservation {
-  final String tripId;
-  final String userId;
-  final String firstName;
-  final String lastName;
-  final int participants;
-  final int totalPrice;
-  final String phoneNumber;
+  final String? tripId;
+  final String? userId;
+  final String? firstName;
+  final String? lastName;
+  final int? participants;
+  final int? totalPrice;
+  final String? phoneNumber;
 
   Reservation({
     required this.tripId,

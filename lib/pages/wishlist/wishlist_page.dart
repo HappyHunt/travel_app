@@ -26,7 +26,11 @@ class Wishlist extends StatelessWidget {
             return Text('Error: ${snapshot.error}');
           } else {
             List<Offer> wishlist = snapshot.data ?? [];
-            return ListView.builder(
+            return wishlist.isEmpty
+                ? Center(
+              child: Text('Nie obserwujesz jeszcze żadnych ofert :('),
+            )
+                : ListView.builder(
               itemCount: wishlist.length,
               itemBuilder: (context, index) {
                 Offer offer = wishlist[index];

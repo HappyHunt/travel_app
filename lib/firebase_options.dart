@@ -54,9 +54,10 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCQeMMlazPYqXA5EnW2oFEzXrtqNNXzpOQ',
-    appId: '1:3035050854887:android:da64ad5161c84f4da0f542',
+    appId: '1:1035050854887:android:da64ad5161c84f4da0f542',
     messagingSenderId: '1035050854887',
     projectId: 'voyagevoyage-app',
+    databaseURL: 'https://voyagevoyage-app-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'voyagevoyage-app.appspot.com',
   );
 }

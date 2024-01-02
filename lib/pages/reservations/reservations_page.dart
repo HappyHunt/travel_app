@@ -59,6 +59,11 @@ class Offer {
   factory Offer.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic>? data = doc.data() as Map<String, dynamic>?;
 
+    List<String> observedBy = [];
+    if (data?['observedBy'] is List<String>) {
+      observedBy = List<String>.from(data?['observedBy']);
+    }
+
     return Offer(
       uid: doc.id,
       title: data?['title'] ?? '',
@@ -67,7 +72,7 @@ class Offer {
       endDate: (data?['endDate'] as Timestamp?)?.toDate() ?? DateTime.now(),
       price: (data?['price'] as num?) ?? 0,
       photoUrl: data?['photoUrl'] ?? '',
-      observedBy: List<String>.from(data?['observedBy'] ?? []),
+      observedBy: observedBy,
     );
   }
 }
@@ -97,11 +102,24 @@ class ReservationsListView extends StatelessWidget {
             } else {
               List<Reservation> reservations = snapshot.data ?? [];
 
-              return Column(
-                children: [
-                  for (int index = 0; index < reservations.length; index++)
-                    ReservationCard(reservation: reservations[index]),
-                ],
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (reservations.isEmpty)
+                      Text(
+                        'Nie masz jeszcze żadnych rezerwacji :(',
+                        style: TextStyle(fontSize: 18.0),
+                      )
+                    else
+                      Column(
+                        children: [
+                          for (int index = 0; index < reservations.length; index++)
+                            ReservationCard(reservation: reservations[index]),
+                        ],
+                      ),
+                  ],
+                ),
               );
             }
           },
@@ -129,13 +147,13 @@ class ReservationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Offer>(
+    return FutureBuilder<Offer?>(
       future: getOfferDetails(reservation.tripId),
-      builder: (context, offerSnapshot) {
+      builder: (context, AsyncSnapshot<Offer?> offerSnapshot) {
         if (offerSnapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
-        } else if (offerSnapshot.hasError) {
-          return Text('Error: ${offerSnapshot.error}');
+        } else if (offerSnapshot.hasError || offerSnapshot.data == null) {
+          return Text('Error: Unable to retrieve offer details');
         } else {
           Offer offer = offerSnapshot.data!;
           return GestureDetector(
@@ -169,7 +187,6 @@ class ReservationCard extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 25.0,
                             fontWeight: FontWeight.bold,
-
                           ),
                         ),
                         const SizedBox(height: 8.0),
@@ -181,15 +198,12 @@ class ReservationCard extends StatelessWidget {
                             ),
                             const SizedBox(width: 8.0),
                             Text(
-                              ' ${offer.startDate.day}.${offer.startDate
-                                  .month}.${offer.startDate.year}'
-                                  ' - ${offer.endDate.day}.${offer.endDate
-                                  .month}.${offer.endDate.year}',
+                              ' ${offer.startDate.day}.${offer.startDate.month}.${offer.startDate.year}'
+                                  ' - ${offer.endDate.day}.${offer.endDate.month}.${offer.endDate.year}',
                               style: const TextStyle(fontSize: 20.0),
                             ),
                           ],
                         ),
-
                         Text(
                           'Liczba uczestników: ${reservation.participants}',
                           style: const TextStyle(
@@ -219,15 +233,23 @@ class ReservationCard extends StatelessWidget {
     );
   }
 
-  Future<Offer> getOfferDetails(String tripId) async {
+  Future<Offer?> getOfferDetails(String tripId) async {
     try {
       var collectionReference = FirebaseFirestore.instance.collection('trips');
-      DocumentSnapshot docSnapshot = await collectionReference.doc(tripId)
-          .get();
-      return Offer.fromFirestore(docSnapshot);
-    } catch (error) {
-      print("Błąd podczas pobierania szczegółów oferty z Firestore: $error");
-      throw error;
+      DocumentSnapshot docSnapshot = await collectionReference.doc(tripId).get();
+
+      // Check if the document exists
+      if (docSnapshot.exists) {
+        return Offer.fromFirestore(docSnapshot);
+      } else {
+        // Handle the case where the document doesn't exist
+        print('Document with tripId $tripId does not exist.');
+        return null;
+      }
+    } catch (error, stackTrace) {
+      print("Error retrieving offer details from Firestore: $error");
+      print("Stack trace: $stackTrace");
+      return null;
     }
   }
 
